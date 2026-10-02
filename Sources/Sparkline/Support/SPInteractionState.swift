@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// At runtime the state comes from the pointer (iPad hover), touch (pressed) and
 /// keyboard focus. For documentation and snapshots you can pin a state with
-/// ``SwiftUI/View/spInteractionState(_:)``, the equivalent of the web
+/// `.spInteractionState(_:)`, the equivalent of the web
 /// components' `state="hover"` input.
 public enum SPInteractionState: String, CaseIterable, Sendable {
     case `default`
