@@ -1,0 +1,55 @@
+# Radio
+
+`SPRadioGroup` is a set of radio buttons where exactly one is selected. `SPRadio` is a single radio, for when you lay radios out yourself.
+
+```swift
+import Sparkline
+```
+
+## Use it for
+
+- Choosing exactly one of two to five options that should all be visible (funding source, account type).
+
+## Don't use it for
+
+- Long lists. Use `SPSelect`.
+- Independent yes/no choices. Use `SPCheckbox`.
+
+## Parameters
+
+`SPRadioGroup(_ title:selection:options:)`
+
+| Name | Type | Default | Notes |
+|---|---|---|---|
+| `title` | `String` | required | The group's accessibility label. Not shown; add a visible heading above. |
+| `selection` | `Binding<Value>` | required | Any `Hashable` value. |
+| `options` | `[SPRadioGroup<Value>.Option]` | required | `.init(value, label:isDisabled:)`. |
+
+`SPRadio(_ label:isSelected:action:)` draws one radio. You decide what `isSelected` is and what `action` does.
+
+Disable the whole group with `.disabled(true)`, or one option with `isDisabled: true`.
+
+## Behavior
+
+- Tapping a selected radio keeps it selected. (The web radio toggles itself off; this one does not.)
+- Each radio is a native `Button` with the `.isSelected` trait when selected. The group is an accessibility container named by `title`.
+
+## Gotchas
+
+- Arrow keys do not move between radios; each is a separate focus stop, as on the web.
+
+## Example
+
+```swift
+@State private var source = "bank"
+
+Text("Funding source").spTextStyle(.label)
+SPRadioGroup("Funding source", selection: $source, options: [
+    .init("bank", label: "Transfer from another bank"),
+    .init("check", label: "Mail a check"),
+])
+```
+
+## Related
+
+`SPButtonGroup` for a compact segmented choice. `SPSelect` for longer lists.

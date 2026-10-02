@@ -1,0 +1,57 @@
+# Checkbox
+
+`SPCheckbox` is a labeled checkbox for on/off choices and consent. It supports an indeterminate (mixed) state.
+
+```swift
+import Sparkline
+```
+
+## Use it for
+
+- Agreeing to terms or disclosures before continuing.
+- Selecting any number of items from a list.
+- A "select all" parent, using `isIndeterminate` when only some children are checked.
+
+## Don't use it for
+
+- Choosing exactly one of several options. Use `SPRadioGroup`.
+- Settings that apply immediately. Use `SPSwitch`.
+
+## Parameters
+
+`SPCheckbox(_ label:isOn:isIndeterminate:)`
+
+| Name | Type | Default | Notes |
+|---|---|---|---|
+| `label` | `String` | required | Wraps onto several lines if needed. |
+| `isOn` | `Binding<Bool>` | required | |
+| `isIndeterminate` | `Bool` | `false` | Shows a dash. Tapping sets `isOn` to `true`; you clear `isIndeterminate` (usually it is computed from the children). |
+
+Disable with `.disabled(true)`.
+
+## Behavior
+
+- A native `Button` with the `.isToggle` trait: VoiceOver reads the label, "Checked", "Unchecked" or "Mixed", and activates with a double tap. Full Keyboard Access works.
+- The whole row, including the 40pt control area, is the tap target.
+
+## Gotchas
+
+- The label is plain text. For a sentence with links ("I agree to the Terms"), give the checkbox a short label and put the linked `Text` next to it.
+
+## Example
+
+```swift
+SPCheckbox("I have read and agree to the account disclosures", isOn: $agreed)
+SPButton("Open account", isFullWidth: true) { submit() }
+    .disabled(!agreed)
+
+// Select all
+SPCheckbox("All accounts",
+           isOn: Binding(get: { accounts.allSatisfy(\.selected) },
+                         set: { on in for i in accounts.indices { accounts[i].selected = on } }),
+           isIndeterminate: accounts.contains(where: \.selected) && !accounts.allSatisfy(\.selected))
+```
+
+## Related
+
+`SPRadioGroup` for single choice. `SPSwitch` for instant settings.

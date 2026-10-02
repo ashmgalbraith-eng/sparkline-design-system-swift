@@ -1,0 +1,54 @@
+# Chip
+
+`SPChip` is a compact pill for a tag, filter or selection. Passing `onRemove` makes it clearable: a remove button appears on the right.
+
+```swift
+import Sparkline
+```
+
+## Use it for
+
+- Showing applied filters or selections the user can remove (pass `onRemove`).
+- Short, static tags or categories.
+
+## Don't use it for
+
+- Primary actions. Use `SPButton`.
+- Filters the user toggles on and off. Chip has no selected state; use `SPButtonGroup` or `SPCheckbox`.
+
+## Parameters
+
+`SPChip(_ label:leftIcon:rightIcon:onRemove:)`
+
+| Name | Type | Default | Notes |
+|---|---|---|---|
+| `label` | `String` | required | |
+| `leftIcon` | `SPIconName?` | `nil` | |
+| `rightIcon` | `SPIconName?` | `nil` | Ignored when the chip is clearable. |
+| `onRemove` | `(() -> Void)?` | `nil` | When set, shows a remove button that calls it. |
+
+Disable with `.disabled(true)`.
+
+## Behavior
+
+- The remove control is a real `Button` labelled "Remove <label>", so VoiceOver and keyboard users can reach it (unlike the web chip).
+- The chip itself is not tappable. Hover shows on iPad with a pointer.
+
+## Gotchas
+
+- The chip does not remove itself. Remove it from your data in `onRemove`.
+
+## Example
+
+```swift
+SPFlowLayout(spacing: SPSpacing.sm) {
+    ForEach(filters, id: \.self) { filter in
+        SPChip(filter) { filters.removeAll { $0 == filter } }
+    }
+    SPButton("Clear all", variant: .text, size: .small) { filters = [] }
+}
+```
+
+## Related
+
+`SPSelect` with a `Set` binding shows its own chips. `SPBadge` for counts. `SPFlowLayout` wraps chips onto rows.
