@@ -14,18 +14,18 @@
 
 ## Parameters
 
-Single: `SPSelect(_ label:selection: Binding<Value?>, options:placeholder:helperText:errorText:state:)`
-Multiple: the same with `selection: Binding<Set<Value>>`.
+Single: `SPSelect(_ label:value: Binding<Value?>, options:placeholder:helperText:errorText:state:)`
+Multiple: the same with `value: Binding<Set<Value>>`.
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | Shown above the trigger and used as the VoiceOver label. |
-| `selection` | `Binding<Value?>` or `Binding<Set<Value>>` | required | The binding type picks single or multiple. `Value` is any `Hashable`, so ints and enums work directly. |
-| `options` | `[SPSelectOption<Value>]` | required | `.init(value, label:isDisabled:)`, in display order. |
-| `placeholder` | `String` | `"Select an option"` | Shown when nothing is selected. |
-| `helperText` | `String` | `""` | Hidden in `.error`. |
-| `errorText` | `String` | `""` | Shown only in `.error`. |
-| `state` | `SPSelectState` | `.default` | `.default` or `.error`. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | `label` | Shown above the trigger and used as the VoiceOver label. |
+| `value` | `Binding<Value?>` or `Binding<Set<Value>>` | required | `value`, `multiple`, `valueChange` | The binding type picks single or multiple. `Value` is any `Hashable`, so ints and enums work directly. |
+| `options` | `[SPSelectOption<Value>]` | required | `options` | `.init(value, label:isDisabled:)`, in display order. |
+| `placeholder` | `String` | `"Select an option"` | `placeholder` | Shown when nothing is selected. |
+| `helperText` | `String` | `""` | `helperText` | Hidden in `.error`. |
+| `errorText` | `String` | `""` | `errorText` | Shown only in `.error`. |
+| `state` | `SPSelectState` | `.default` | `state` | `.default` or `.error`. The web's `'disabled'` state is `.disabled(true)`. |
 
 Disable with `.disabled(true)`.
 
@@ -45,7 +45,7 @@ Disable with `.disabled(true)`.
 ```swift
 @State private var term: Int? = 12
 
-SPSelect("Term length", selection: $term, options: [
+SPSelect("Term length", value: $term, options: [
     .init(6, label: "6 months"),
     .init(12, label: "12 months"),
     .init(24, label: "24 months"),

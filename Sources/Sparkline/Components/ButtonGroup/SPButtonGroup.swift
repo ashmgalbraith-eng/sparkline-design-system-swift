@@ -17,8 +17,6 @@ public enum SPButtonGroupSize: String, CaseIterable, Sendable {
 /// ])
 /// ```
 public struct SPButtonGroup<Value: Hashable>: View {
-    public typealias Size = SPButtonGroupSize
-
     /// One segment.
     public struct Item: Identifiable {
         public let value: Value
@@ -42,8 +40,8 @@ public struct SPButtonGroup<Value: Hashable>: View {
 
     @Binding var selection: Value
     let items: [Item]
-    let size: Size
-    let showsLabels: Bool
+    let size: SPButtonGroupSize
+    let showsLabel: Bool
 
     @Environment(\.isEnabled) private var isEnabled
 
@@ -51,16 +49,16 @@ public struct SPButtonGroup<Value: Hashable>: View {
     ///   - selection: The selected item's value.
     ///   - items: Two to five segments.
     ///   - size: `.large` (48pt) or `.small` (36pt).
-    ///   - showsLabels: `false` shows icons only. Labels are still read by VoiceOver.
-    public init(selection: Binding<Value>, items: [Item], size: Size = .large, showsLabels: Bool = true) {
+    ///   - showsLabel: `false` shows icons only. Labels are still read by VoiceOver.
+    public init(selection: Binding<Value>, items: [Item], size: SPButtonGroupSize = .large, showsLabel: Bool = true) {
         self._selection = selection
         self.items = items
         self.size = size
-        self.showsLabels = showsLabels
+        self.showsLabel = showsLabel
     }
 
     public var body: some View {
-        let divider = isEnabled ? Color.spBorderDefault : Color.spBorderDisabled
+        let divider = isEnabled ? SPColor.borderDefault : SPColor.borderDisabled
         let shape = RoundedRectangle(cornerRadius: SPRadius.md, style: .continuous)
         HStack(spacing: 1) {
             ForEach(items) { item in
@@ -69,9 +67,9 @@ public struct SPButtonGroup<Value: Hashable>: View {
                 } label: {
                     HStack(spacing: SPSpacing.sm) {
                         if let icon = item.leftIcon { SPIcon(icon, size: 24) }
-                        if showsLabels {
+                        if showsLabel {
                             Text(item.label)
-                                .spTextStyle(.button)
+                                .spType(.button)
                                 .lineLimit(1)
                                 .fixedSize()
                         }
@@ -112,11 +110,11 @@ private struct SegmentBody: View {
     var body: some View {
         let active = isHovered || configuration.isPressed || isFocused
         let background: Color = {
-            if !isEnabled { return .spSurfaceDisabled }
-            if isSelected { return active ? .spActionBrandBorder : .spSurfaceBrand }
-            return active ? .spSurfaceHoverBg : .spSurfaceDefault
+            if !isEnabled { return SPColor.surfaceDisabled }
+            if isSelected { return active ? SPColor.actionBrandBorder : SPColor.surfaceBrand }
+            return active ? SPColor.surfaceHoverBg : SPColor.surfaceDefault
         }()
-        let foreground: Color = !isEnabled ? .spTextDisabled : (isSelected ? .spTextInverse : .spTextBrand)
+        let foreground: Color = !isEnabled ? SPColor.textDisabled : (isSelected ? SPColor.textInverse : SPColor.textBrand)
 
         configuration.label
             .foregroundStyle(foreground)
@@ -127,7 +125,7 @@ private struct SegmentBody: View {
             .background(background)
             .overlay {
                 if isFocused && isEnabled {
-                    Rectangle().strokeBorder(Color.spFocusRing, lineWidth: 4)
+                    Rectangle().strokeBorder(SPColor.focusRing, lineWidth: 4)
                 }
             }
             .contentShape(Rectangle())

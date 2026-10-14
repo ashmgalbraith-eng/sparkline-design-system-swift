@@ -16,11 +16,11 @@
 
 `SPCard(variant:padding:content:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `variant` | `SPCardVariant` | `.elevated` | `.elevated` uses a shadow, `.outlined` a border, `.filled` a subtle background. |
-| `padding` | `SPCardPadding` | `.md` | `.none`, `.sm`, `.md`, `.lg`: 0, 8, 16 or 24pt. Use `.none` when the content has its own rows and dividers. |
-| `content` | `@ViewBuilder` | required | Laid out in a leading-aligned `VStack` with no spacing. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `variant` | `SPCardVariant` | `.elevated` | `variant` | `.elevated` uses a shadow, `.outlined` a border, `.filled` a subtle background. |
+| `padding` | `SPCardPadding` | `.md` | `padding` | `.none`, `.sm`, `.md`, `.lg`: 0, 8, 16 or 24pt. Use `.none` when the content has its own rows and dividers. |
+| `content` | `@ViewBuilder` | required | (projected content) | Laid out in a leading-aligned `VStack` with no spacing. |
 
 ## Behavior
 
@@ -30,7 +30,7 @@
 ## Gotchas
 
 - Card is not interactive. For a tappable card, wrap it: `Button { … } label: { SPCard { … } }.buttonStyle(.plain)`.
-- **Known token issue (dark mode):** `.elevated` is invisible on a `spSurfaceDefault` background, because the card and page are both `neutral-90` and the black shadow does not show. Use `.outlined` on dark default surfaces, or fix the token in the web design system.
+- **Known token issue (dark mode):** `.elevated` is invisible on a `SPColor.surfaceDefault` background, because the card and page are both `neutral-90` and the black shadow does not show. Use `.outlined` on dark default surfaces, or fix the token in the web design system.
 
 ## Example
 
@@ -38,14 +38,14 @@
 SPCard(variant: .outlined, padding: .none) {
     ForEach(rows) { row in
         HStack {
-            Text(row.key).foregroundStyle(.spTextSecondary)
+            Text(row.key).foregroundStyle(SPColor.textSecondary)
             Spacer()
-            Text(row.value).foregroundStyle(.spTextPrimary)
+            Text(row.value).foregroundStyle(SPColor.textPrimary)
         }
-        .spTextStyle(.body2)
+        .spType(.body2)
         .padding(SPSpacing.md)
         if row.id != rows.last?.id {
-            Divider().overlay(Color.spBorderSubtle)
+            Divider().overlay(SPColor.borderSubtle)
         }
     }
 }

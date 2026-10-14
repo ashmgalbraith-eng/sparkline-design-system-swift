@@ -26,7 +26,7 @@ public enum SPSelectState: String, CaseIterable, Sendable {
 /// ```swift
 /// @State private var term: Int? = 12
 ///
-/// SPSelect("Term length", selection: $term, options: [
+/// SPSelect("Term length", value: $term, options: [
 ///     .init(6, label: "6 months"),
 ///     .init(12, label: "12 months"),
 ///     .init(24, label: "24 months"),
@@ -51,7 +51,7 @@ public struct SPSelect<Value: Hashable>: View {
     /// Single selection.
     /// - Parameters:
     ///   - label: Shown above the trigger. Also the accessibility label.
-    ///   - selection: The selected value, or `nil` for none.
+    ///   - value: The selected value, or `nil` for none.
     ///   - options: The choices, in display order.
     ///   - placeholder: Shown when nothing is selected.
     ///   - helperText: Shown below. Hidden in the error state.
@@ -59,7 +59,7 @@ public struct SPSelect<Value: Hashable>: View {
     ///   - state: `.default` or `.error`.
     public init(
         _ label: String,
-        selection: Binding<Value?>,
+        value: Binding<Value?>,
         options: [SPSelectOption<Value>],
         placeholder: String = "Select an option",
         helperText: String = "",
@@ -67,7 +67,7 @@ public struct SPSelect<Value: Hashable>: View {
         state: SPSelectState = .default
     ) {
         self.label = label
-        self.selection = .single(selection)
+        self.selection = .single(value)
         self.options = options
         self.placeholder = placeholder
         self.helperText = helperText
@@ -79,7 +79,7 @@ public struct SPSelect<Value: Hashable>: View {
     /// in option order, and the menu stays open while you pick.
     public init(
         _ label: String,
-        selection: Binding<Set<Value>>,
+        value: Binding<Set<Value>>,
         options: [SPSelectOption<Value>],
         placeholder: String = "Select an option",
         helperText: String = "",
@@ -87,7 +87,7 @@ public struct SPSelect<Value: Hashable>: View {
         state: SPSelectState = .default
     ) {
         self.label = label
-        self.selection = .multiple(selection)
+        self.selection = .multiple(value)
         self.options = options
         self.placeholder = placeholder
         self.helperText = helperText
@@ -115,25 +115,25 @@ public struct SPSelect<Value: Hashable>: View {
         VStack(alignment: .leading, spacing: SPSpacing.xs) {
             if !label.isEmpty {
                 Text(label)
-                    .spTextStyle(.body2)
+                    .spType(.body2)
                     .fontWeight(.medium)
-                    .foregroundStyle(.spTextPrimary)
+                    .foregroundStyle(SPColor.textPrimary)
                     .accessibilityHidden(true)
             }
 
             trigger
 
             if isError, !errorText.isEmpty {
-                Text(errorText).spTextStyle(.caption).foregroundStyle(.spTextError)
+                Text(errorText).spType(.caption).foregroundStyle(SPColor.textError)
             } else if !isError, !helperText.isEmpty {
-                Text(helperText).spTextStyle(.caption).foregroundStyle(.spTextSecondary)
+                Text(helperText).spType(.caption).foregroundStyle(SPColor.textSecondary)
             }
         }
     }
 
     private var trigger: some View {
         let shape = RoundedRectangle(cornerRadius: SPRadius.md)
-        let border: Color = !isEnabled ? .spBorderDisabled : (isError ? .spBorderError : .spBorderSubtle)
+        let border: Color = !isEnabled ? SPColor.borderDisabled : (isError ? SPColor.borderError : SPColor.borderSubtle)
         let selected = selectedOptions
 
         return HStack(spacing: SPSpacing.xs) {
@@ -143,26 +143,26 @@ public struct SPSelect<Value: Hashable>: View {
                 }
             } else {
                 Text(selected.first?.label ?? placeholder)
-                    .spTextStyle(.body1)
-                    .foregroundStyle(selected.isEmpty || !isEnabled ? Color.spTextSecondary : Color.spTextPrimary)
+                    .spType(.body1)
+                    .foregroundStyle(selected.isEmpty || !isEnabled ? SPColor.textSecondary : SPColor.textPrimary)
                     .lineLimit(1)
                     .truncationMode(.tail)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .allowsHitTesting(false)
             }
             SPIcon(.chevronDown, size: 20)
-                .foregroundStyle(.spTextSecondary)
+                .foregroundStyle(SPColor.textSecondary)
                 .allowsHitTesting(false)
         }
         .padding(.vertical, 10)
         .padding(.horizontal, SPSpacing.sm)
         .frame(minHeight: 44)
-        .background { menu.background(shape.fill(isEnabled ? Color.spSurfaceDefault : Color.spSurfaceSubtle)) }
+        .background { menu.background(shape.fill(isEnabled ? SPColor.surfaceDefault : SPColor.surfaceSubtle)) }
         .overlay(shape.strokeBorder(border, lineWidth: 1.5).allowsHitTesting(false))
         .overlay {
             if isError {
                 RoundedRectangle(cornerRadius: SPRadius.md + 3)
-                    .strokeBorder(Color.spBorderError.opacity(0.12), lineWidth: 3)
+                    .strokeBorder(SPColor.borderError.opacity(0.12), lineWidth: 3)
                     .padding(-3)
                     .allowsHitTesting(false)
             }
@@ -210,7 +210,7 @@ public struct SPSelect<Value: Hashable>: View {
     private func chip(_ option: SPSelectOption<Value>) -> some View {
         HStack(spacing: SPSpacing.xs) {
             Text(option.label)
-                .spTextStyle(.caption)
+                .spType(.caption)
                 .fontWeight(.medium)
                 .lineLimit(1)
                 .fixedSize()
@@ -225,11 +225,11 @@ public struct SPSelect<Value: Hashable>: View {
             .buttonStyle(.plain)
             .accessibilityLabel("Remove \(option.label)")
         }
-        .foregroundStyle(.spTextBrand)
+        .foregroundStyle(SPColor.textBrand)
         .padding(.leading, SPSpacing.sm)
         .padding(.trailing, 6)
         .frame(height: 24)
-        .background(Capsule().fill(Color.spSurfaceBrandSubtle))
+        .background(Capsule().fill(SPColor.surfaceBrandSubtle))
     }
 }
 
@@ -254,11 +254,11 @@ struct SPSelect_Previews: PreviewProvider {
         let terms: [SPSelectOption<Int>] = [.init(6, label: "6 months"), .init(12, label: "12 months"), .init(24, label: "24 months")]
         var body: some View {
             VStack(spacing: SPSpacing.lg) {
-                SPSelect("Term length", selection: $term, options: terms)
-                SPSelect("Term length", selection: $empty, options: terms, helperText: "You can change this later")
-                SPSelect("Term length", selection: $empty, options: terms, errorText: "Choose a term", state: .error)
-                SPSelect("States", selection: $states, options: [.init("CA", label: "California"), .init("NY", label: "New York"), .init("TX", label: "Texas")])
-                SPSelect("Disabled", selection: $term, options: terms).disabled(true)
+                SPSelect("Term length", value: $term, options: terms)
+                SPSelect("Term length", value: $empty, options: terms, helperText: "You can change this later")
+                SPSelect("Term length", value: $empty, options: terms, errorText: "Choose a term", state: .error)
+                SPSelect("States", value: $states, options: [.init("CA", label: "California"), .init("NY", label: "New York"), .init("TX", label: "Texas")])
+                SPSelect("Disabled", value: $term, options: terms).disabled(true)
             }
             .padding()
         }

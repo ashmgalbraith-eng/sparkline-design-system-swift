@@ -17,13 +17,13 @@ import Sparkline
 
 ## Parameters
 
-`SPSwitch(_ label:isOn:showsLabel:)`
+`SPSwitch(_ label:isChecked:showsLabel:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | Shown leading. Always read by VoiceOver. |
-| `isOn` | `Binding<Bool>` | required | |
-| `showsLabel` | `Bool` | `true` | `false` hides the text visually only. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | (none) | Shown leading. Always read by VoiceOver. The web switch has no label. |
+| `isChecked` | `Binding<Bool>` | required | `checked`, `checkedChange` | |
+| `showsLabel` | `Bool` | `true` | (none) | `false` hides the text visually only. |
 
 Disable with `.disabled(true)`.
 
@@ -41,10 +41,10 @@ Disable with `.disabled(true)`.
 
 ```swift
 VStack(spacing: 0) {
-    SPSwitch("Paperless statements", isOn: $paperless)
+    SPSwitch("Paperless statements", isChecked: $paperless)
         .padding(.vertical, SPSpacing.md)
-    Divider().overlay(Color.spBorderSubtle)
-    SPSwitch("Push notifications", isOn: $push)
+    Divider().overlay(SPColor.borderSubtle)
+    SPSwitch("Push notifications", isChecked: $push)
         .padding(.vertical, SPSpacing.md)
 }
 ```

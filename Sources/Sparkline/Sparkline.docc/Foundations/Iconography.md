@@ -8,7 +8,7 @@ Icons are drawn on a 24×24 grid. ``SPIconName`` has one case per icon, with raw
 
 ```swift
 SPIcon(.bellOutline, size: 20)
-    .foregroundStyle(.spTextSecondary)
+    .foregroundStyle(SPColor.textSecondary)
 ```
 
 ## Generated from the web registry
@@ -22,7 +22,7 @@ node scripts/generate-icons.mjs
 ## Guidelines
 
 - Use 16, 20, 24 or 32pt.
-- Color icons with semantic text tokens (`spTextPrimary`, `spTextBrand`, `spTextError`).
+- Color icons with semantic text tokens (`SPColor.textPrimary`, `SPColor.textBrand`, `SPColor.textError`).
 - Give an icon an accessibility label only when it carries meaning on its own; otherwise it is hidden from VoiceOver.
 - Use ``SPIconShape`` when you need an icon as a `Shape` (for example, to stroke it).
 

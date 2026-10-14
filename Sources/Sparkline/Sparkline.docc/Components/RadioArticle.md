@@ -21,14 +21,20 @@
 | `selection` | `Binding<Value>` | required | Any `Hashable` value. |
 | `options` | `[SPRadioGroup<Value>.Option]` | required | `.init(value, label:isDisabled:)`. |
 
-`SPRadio(_ label:isSelected:action:)` draws one radio. You decide what `isSelected` is and what `action` does.
+The web has a single radio, which matches `SPRadio(_ label:isChecked:action:)`:
+
+| Name | Type | Angular | Notes |
+|---|---|---|---|
+| `label` | `String` | `label` | |
+| `isChecked` | `Bool` | `checked` | You decide what it is. |
+| `action` | `() -> Void` | `checkedChange` | Called on tap. |
 
 Disable the whole group with `.disabled(true)`, or one option with `isDisabled: true`.
 
 ## Behavior
 
 - Tapping a selected radio keeps it selected. (The web radio toggles itself off; this one does not.)
-- Each radio is a native `Button` with the `.isSelected` trait when selected. The group is an accessibility container named by `title`.
+- Each radio is a native `Button` with the `.isSelected` trait when checked. The group is an accessibility container named by `title`.
 
 ## Gotchas
 
@@ -39,7 +45,7 @@ Disable the whole group with `.disabled(true)`, or one option with `isDisabled: 
 ```swift
 @State private var source = "bank"
 
-Text("Funding source").spTextStyle(.label)
+Text("Funding source").spType(.label)
 SPRadioGroup("Funding source", selection: $source, options: [
     .init("bank", label: "Transfer from another bank"),
     .init("check", label: "Mail a check"),

@@ -15,15 +15,15 @@
 
 ## Parameters
 
-`SPCheckbox(_ label:isOn:isIndeterminate:)`
+`SPCheckbox(_ label:isChecked:isIndeterminate:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | Wraps onto several lines if needed. |
-| `isOn` | `Binding<Bool>` | required | |
-| `isIndeterminate` | `Bool` | `false` | Shows a dash. Tapping sets `isOn` to `true`; you clear `isIndeterminate` (usually it is computed from the children). |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | `label` | Wraps onto several lines if needed. |
+| `isChecked` | `Binding<Bool>` | required | `checked`, `checkedChange` | |
+| `isIndeterminate` | `Bool` | `false` | `indeterminate` | Shows a dash. Tapping sets `isChecked` to `true`; you clear `isIndeterminate` (usually it is computed from the children). |
 
-Disable with `.disabled(true)`.
+Disable with `.disabled(true)` (the web's `disabled`).
 
 ## Behavior
 
@@ -37,14 +37,14 @@ Disable with `.disabled(true)`.
 ## Example
 
 ```swift
-SPCheckbox("I have read and agree to the account disclosures", isOn: $agreed)
+SPCheckbox("I have read and agree to the account disclosures", isChecked: $agreed)
 SPButton("Open account", isFullWidth: true) { submit() }
     .disabled(!agreed)
 
 // Select all
 SPCheckbox("All accounts",
-           isOn: Binding(get: { accounts.allSatisfy(\.selected) },
-                         set: { on in for i in accounts.indices { accounts[i].selected = on } }),
+           isChecked: Binding(get: { accounts.allSatisfy(\.selected) },
+                              set: { on in for i in accounts.indices { accounts[i].selected = on } }),
            isIndeterminate: accounts.contains(where: \.selected) && !accounts.allSatisfy(\.selected))
 ```
 

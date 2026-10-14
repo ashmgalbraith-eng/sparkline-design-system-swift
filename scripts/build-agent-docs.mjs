@@ -54,7 +54,7 @@ const llms = `# Sparkline Design System for SwiftUI
 
 > SwiftUI component library for iOS and iPadOS, distributed as a Swift package. Every component is themed through semantic color tokens that follow the system light/dark setting. These docs are written for AI coding agents building product screens from the library.
 
-Before writing UI: add the \`Sparkline\` package, call \`SPFonts.register()\` once at launch, and use the Sparkline component for any control that has one. Bind values with \`Binding\`s, handle actions with closures, and disable with \`.disabled(_:)\`. Style app code with \`Color.sp…\`, \`SPSpacing\`, \`SPRadius\`, \`.spShadow\` and \`.spTextStyle\` only.
+Before writing UI: add the \`Sparkline\` package, call \`SPFonts.register()\` once at launch, and use the Sparkline component for any control that has one. Bind values with \`Binding\`s, handle actions with closures, and disable with \`.disabled(_:)\`. Style app code with \`SPColor\`, \`SPSpacing\`, \`SPRadius\`, \`.spShadow\` and \`.spType\` only. Token names are the CSS names in camelCase: \`--color-surface-brand\` is \`SPColor.surfaceBrand\`.
 
 ## Guides
 

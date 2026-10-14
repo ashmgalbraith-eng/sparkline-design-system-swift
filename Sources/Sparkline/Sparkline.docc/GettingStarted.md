@@ -40,10 +40,10 @@ If the fonts are missing, text falls back to the system font and nothing breaks.
 
 ## Follow the conventions
 
-- Values are bindings: `SPCheckbox("…", isOn: $agreed)`, `SPInput("Email", text: $email)`.
+- Values are bindings: `SPCheckbox("…", isChecked: $agreed)`, `SPInput("Email", value: $email)`.
 - Actions are closures: `SPButton("Continue") { next() }`.
 - Disabled state is the standard `.disabled(_:)` modifier.
-- Style your own views with semantic tokens only: `Color.sp…`, ``SPSpacing``, ``SPRadius``, `.spShadow(_:)`, `.spTextStyle(_:)`.
+- Style your own views with semantic tokens only: ``SPColor``, ``SPSpacing``, ``SPRadius``, `.spShadow(_:)`, `.spType(_:)`.
 - Light and dark mode follow the system. Use `.preferredColorScheme(_:)` to force one.
 
 ## Explore the catalog

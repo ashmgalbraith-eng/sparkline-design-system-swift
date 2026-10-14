@@ -40,7 +40,7 @@ public struct SPRadioGroup<Value: Hashable>: View {
     public var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             ForEach(options) { option in
-                SPRadio(option.label, isSelected: option.value == selection) {
+                SPRadio(option.label, isChecked: option.value == selection) {
                     selection = option.value
                 }
                 .disabled(option.isDisabled)
@@ -57,35 +57,35 @@ public struct SPRadioGroup<Value: Hashable>: View {
 /// Tapping a selected radio keeps it selected (`action` is still called).
 public struct SPRadio: View {
     let label: String
-    let isSelected: Bool
+    let isChecked: Bool
     let action: () -> Void
 
-    public init(_ label: String, isSelected: Bool, action: @escaping () -> Void) {
+    public init(_ label: String, isChecked: Bool, action: @escaping () -> Void) {
         self.label = label
-        self.isSelected = isSelected
+        self.isChecked = isChecked
         self.action = action
     }
 
     public var body: some View {
         Button(action: action) {
-            Text(label).spTextStyle(.body1)
+            Text(label).spType(.body1)
         }
-        .buttonStyle(RadioStyle(isSelected: isSelected))
-        .accessibilityAddTraits(isSelected ? [.isSelected] : [])
+        .buttonStyle(RadioStyle(isChecked: isChecked))
+        .accessibilityAddTraits(isChecked ? [.isSelected] : [])
     }
 }
 
 private struct RadioStyle: ButtonStyle {
-    let isSelected: Bool
+    let isChecked: Bool
 
     func makeBody(configuration: Configuration) -> some View {
-        RadioBody(configuration: configuration, isSelected: isSelected)
+        RadioBody(configuration: configuration, isChecked: isChecked)
     }
 }
 
 private struct RadioBody: View {
     let configuration: ButtonStyleConfiguration
-    let isSelected: Bool
+    let isChecked: Bool
 
     @Environment(\.isEnabled) private var isEnabled
     @Environment(\.isFocused) private var isFocused
@@ -94,7 +94,7 @@ private struct RadioBody: View {
 
     var body: some View {
         let state = SPInteractionResolver(forced: forced, isPressed: configuration.isPressed, isFocused: isFocused, isHovered: isHovered).state
-        let ring: Color = !isEnabled ? .spBorderDisabled : (isSelected ? .spBorderDefault : .spBorderSubtle)
+        let ring: Color = !isEnabled ? SPColor.borderDisabled : (isChecked ? SPColor.borderDefault : SPColor.borderSubtle)
 
         HStack(spacing: SPSpacing.xs) {
             ZStack {
@@ -104,20 +104,20 @@ private struct RadioBody: View {
                     .frame(width: 24, height: 24)
                     .spFocusRing(isEnabled && state == .focus, cornerRadius: 12, lineWidth: 2)
                 Circle()
-                    .fill(isEnabled ? Color.spSurfaceBrand : Color.spSurfaceDisabled)
+                    .fill(isEnabled ? SPColor.surfaceBrand : SPColor.surfaceDisabled)
                     .frame(width: 8, height: 8)
-                    .scaleEffect(isSelected ? 1 : 0)
+                    .scaleEffect(isChecked ? 1 : 0)
             }
             .frame(width: 40, height: 40)
 
             configuration.label
-                .foregroundStyle(isEnabled ? Color.spTextPrimary : Color.spTextDisabled)
+                .foregroundStyle(isEnabled ? SPColor.textPrimary : SPColor.textDisabled)
                 .multilineTextAlignment(.leading)
         }
         .contentShape(Rectangle())
         .onHover { isHovered = $0 }
         .animation(.easeOut(duration: 0.15), value: state)
-        .animation(.easeOut(duration: 0.15), value: isSelected)
+        .animation(.easeOut(duration: 0.15), value: isChecked)
     }
 }
 
@@ -131,7 +131,7 @@ struct SPRadio_Previews: PreviewProvider {
                     .init("check", label: "Mail a check"),
                     .init("wire", label: "Wire transfer", isDisabled: true),
                 ])
-                SPRadio("Focus", isSelected: true) {}.spInteractionState(.focus)
+                SPRadio("Focus", isChecked: true) {}.spInteractionState(.focus)
             }
             .padding()
         }

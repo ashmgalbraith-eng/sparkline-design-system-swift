@@ -1,5 +1,29 @@
 import SwiftUI
 
+/// A step's status (`StepState` on the web).
+public enum SPStepState: String, CaseIterable, Sendable {
+    case pending, active, completed, error
+}
+
+/// Layout direction (`StepperOrientation` on the web).
+public enum SPStepperOrientation: String, CaseIterable, Sendable {
+    case horizontal, vertical
+}
+
+/// One step (`StepperStep` on the web).
+public struct SPStepperStep: Sendable {
+    public let label: String
+    public let description: String?
+    /// Overrides the automatic state, e.g. to flag an error.
+    public let state: SPStepState?
+
+    public init(_ label: String, description: String? = nil, state: SPStepState? = nil) {
+        self.label = label
+        self.description = description
+        self.state = state
+    }
+}
+
 /// A progress indicator for multi-step flows: numbered steps with labels,
 /// horizontal or vertical. Display only.
 ///
@@ -12,44 +36,22 @@ import SwiftUI
 /// ], activeStep: 1)
 /// ```
 public struct SPStepper: View {
-    public enum StepState: String, CaseIterable, Sendable {
-        case pending, active, completed, error
-    }
-
-    public enum Orientation: String, CaseIterable, Sendable {
-        case horizontal, vertical
-    }
-
-    /// One step.
-    public struct Step: Sendable {
-        public let label: String
-        public let description: String?
-        /// Overrides the automatic state, e.g. to flag an error.
-        public let state: StepState?
-
-        public init(_ label: String, description: String? = nil, state: StepState? = nil) {
-            self.label = label
-            self.description = description
-            self.state = state
-        }
-    }
-
-    let steps: [Step]
+    let steps: [SPStepperStep]
     let activeStep: Int
-    let orientation: Orientation
+    let orientation: SPStepperOrientation
 
     /// - Parameters:
     ///   - steps: Three to six steps.
     ///   - activeStep: Zero-based index of the current step. Earlier steps show as
     ///     completed, later ones as pending.
     ///   - orientation: `.horizontal` or `.vertical`.
-    public init(steps: [Step], activeStep: Int = 0, orientation: Orientation = .horizontal) {
+    public init(steps: [SPStepperStep], activeStep: Int = 0, orientation: SPStepperOrientation = .horizontal) {
         self.steps = steps
         self.activeStep = activeStep
         self.orientation = orientation
     }
 
-    func state(at index: Int) -> StepState {
+    func state(at index: Int) -> SPStepState {
         if let explicit = steps[index].state { return explicit }
         if index < activeStep { return .completed }
         if index == activeStep { return .active }
@@ -76,7 +78,7 @@ public struct SPStepper: View {
         .animation(.easeInOut(duration: 0.2), value: activeStep)
     }
 
-    private func horizontalStep(_ step: Step, index: Int) -> some View {
+    private func horizontalStep(_ step: SPStepperStep, index: Int) -> some View {
         let s = state(at: index)
         return VStack(spacing: SPSpacing.xs) {
             HStack(spacing: 0) {
@@ -96,7 +98,7 @@ public struct SPStepper: View {
         .modifier(StepAccessibility(step: step, index: index, count: steps.count, state: s))
     }
 
-    private func verticalStep(_ step: Step, index: Int) -> some View {
+    private func verticalStep(_ step: SPStepperStep, index: Int) -> some View {
         let s = state(at: index)
         return HStack(alignment: .top, spacing: SPSpacing.sm) {
             VStack(spacing: 0) {
@@ -118,44 +120,44 @@ public struct SPStepper: View {
         .modifier(StepAccessibility(step: step, index: index, count: steps.count, state: s))
     }
 
-    private func content(_ step: Step, state: StepState) -> some View {
+    private func content(_ step: SPStepperStep, state: SPStepState) -> some View {
         VStack(alignment: orientation == .horizontal ? .center : .leading, spacing: 2) {
             Text(step.label)
-                .spTextStyle(.body2)
+                .spType(.body2)
                 .fontWeight(state == .active ? .bold : .medium)
                 .foregroundStyle(labelColor(state))
             if let description = step.description {
                 Text(description)
-                    .spTextStyle(.caption)
-                    .foregroundStyle(.spTextSecondary)
+                    .spType(.caption)
+                    .foregroundStyle(SPColor.textSecondary)
             }
         }
     }
 
-    private func connectorColor(_ state: StepState) -> Color {
-        state == .completed ? .spSurfaceBrand : .spBorderSubtle
+    private func connectorColor(_ state: SPStepState) -> Color {
+        state == .completed ? SPColor.surfaceBrand : SPColor.borderSubtle
     }
 
-    private func labelColor(_ state: StepState) -> Color {
+    private func labelColor(_ state: SPStepState) -> Color {
         switch state {
-        case .active, .completed: return .spTextPrimary
-        case .error: return .spTextError
-        case .pending: return .spTextSecondary
+        case .active, .completed: return SPColor.textPrimary
+        case .error: return SPColor.textError
+        case .pending: return SPColor.textSecondary
         }
     }
 }
 
 private struct StepIndicator: View {
     let number: Int
-    let state: SPStepper.StepState
+    let state: SPStepState
 
     var body: some View {
         let (border, fill, foreground): (Color, Color, Color) = {
             switch state {
-            case .active: return (.spSurfaceBrand, .spSurfaceBrand, .spTextInverse)
-            case .completed: return (.spSurfaceBrand, .clear, .spSurfaceBrand)
-            case .error: return (.spBorderError, .clear, .spSurfaceError)
-            case .pending: return (.spBorderSubtle, .clear, .spTextSecondary)
+            case .active: return (SPColor.surfaceBrand, SPColor.surfaceBrand, SPColor.textInverse)
+            case .completed: return (SPColor.surfaceBrand, .clear, SPColor.surfaceBrand)
+            case .error: return (SPColor.borderError, .clear, SPColor.surfaceError)
+            case .pending: return (SPColor.borderSubtle, .clear, SPColor.textSecondary)
             }
         }()
         ZStack {
@@ -165,7 +167,7 @@ private struct StepIndicator: View {
             case .completed: SPIcon(.checkCircleOutline, size: 20)
             case .error: SPIcon(.alertCircleOutline, size: 20)
             case .active, .pending:
-                Text("\(number)").spTextStyle(.caption).fontWeight(.bold)
+                Text("\(number)").spType(.caption).fontWeight(.bold)
             }
         }
         .foregroundStyle(foreground)
@@ -175,10 +177,10 @@ private struct StepIndicator: View {
 
 /// Reads each step as "Step 2 of 5, Personal info, current".
 private struct StepAccessibility: ViewModifier {
-    let step: SPStepper.Step
+    let step: SPStepperStep
     let index: Int
     let count: Int
-    let state: SPStepper.StepState
+    let state: SPStepState
 
     func body(content: Content) -> some View {
         let status: String = {
@@ -197,7 +199,7 @@ private struct StepAccessibility: ViewModifier {
 }
 
 struct SPStepper_Previews: PreviewProvider {
-    static let steps: [SPStepper.Step] = [
+    static let steps: [SPStepperStep] = [
         .init("Choose CD"), .init("Personal info"), .init("Verify identity", state: .error), .init("Review"),
     ]
 

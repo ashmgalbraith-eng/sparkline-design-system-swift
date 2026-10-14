@@ -112,7 +112,7 @@ struct CatalogRoot: View {
                     selection.view
                         .navigationTitle(selection.rawValue)
                 } else {
-                    Text("Choose a page").foregroundStyle(.spTextSecondary)
+                    Text("Choose a page").foregroundStyle(SPColor.textSecondary)
                 }
             }
             .toolbar {
@@ -133,7 +133,7 @@ struct CatalogRoot: View {
                 }
             }
         }
-        .tint(.spSurfaceBrand)
+        .tint(SPColor.surfaceBrand)
         .preferredColorScheme(appearance.scheme)
         .dynamicTypeSize(typeSize)
     }
@@ -143,7 +143,7 @@ struct CatalogRoot: View {
             Label {
                 Text(page.rawValue)
             } icon: {
-                SPIcon(page.icon, size: 20).foregroundStyle(.spTextBrand)
+                SPIcon(page.icon, size: 20).foregroundStyle(SPColor.textBrand)
             }
         }
     }

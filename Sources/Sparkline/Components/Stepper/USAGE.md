@@ -20,13 +20,13 @@ import Sparkline
 
 `SPStepper(steps:activeStep:orientation:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `steps` | `[SPStepper.Step]` | required | `.init(label, description:state:)`. |
-| `activeStep` | `Int` | `0` | Zero-based. Earlier steps show as completed, later ones as pending. |
-| `orientation` | `SPStepper.Orientation` | `.horizontal` | `.horizontal` or `.vertical`. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `steps` | `[SPStepperStep]` | required | `steps` | `.init(label, description:state:)`. |
+| `activeStep` | `Int` | `0` | `activeStep` | Zero-based. Earlier steps show as completed, later ones as pending. |
+| `orientation` | `SPStepperOrientation` | `.horizontal` | `orientation` | `.horizontal` or `.vertical`. |
 
-`SPStepper.StepState` is `.pending`, `.active`, `.completed` or `.error`. Setting `state` on a step overrides the automatic state, e.g. to flag an error.
+`SPStepState` is `.pending`, `.active`, `.completed` or `.error`. Setting `state` on a step overrides the automatic state, e.g. to flag an error.
 
 ## Behavior
 

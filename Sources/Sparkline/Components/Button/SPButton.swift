@@ -1,59 +1,59 @@
 import SwiftUI
 
+/// Visual emphasis (`ButtonType` on the web).
+public enum SPButtonType: String, CaseIterable, Sendable {
+    case filled, outlined, text
+}
+
+/// Height (`ButtonSize` on the web): large is 48pt, small is 36pt.
+public enum SPButtonSize: String, CaseIterable, Sendable {
+    case large, small
+}
+
 /// Triggers an action. Three emphasis levels: `filled` (primary), `outlined`
 /// (secondary) and `text` (tertiary or inline).
 ///
 /// ```swift
 /// SPButton("Continue") { goNext() }
-/// SPButton("Back", variant: .text, leftIcon: .arrowLeft) { goBack() }
+/// SPButton("Back", type: .text, leftIcon: .arrowLeft) { goBack() }
 /// SPButton("Create login", isFullWidth: true) { submit() }
 ///     .disabled(!canSubmit)
 /// ```
 public struct SPButton: View {
-    /// Visual emphasis.
-    public enum Variant: String, CaseIterable, Sendable {
-        case filled, outlined, text
-    }
-
-    /// Height: large is 48pt, small is 36pt.
-    public enum Size: String, CaseIterable, Sendable {
-        case large, small
-    }
-
     let label: String
-    let variant: Variant
-    let size: Size
+    let type: SPButtonType
+    let size: SPButtonSize
     let leftIcon: SPIconName?
     let rightIcon: SPIconName?
-    let showsLabel: Bool
+    let showsText: Bool
     let isFullWidth: Bool
     let action: () -> Void
 
     /// - Parameters:
-    ///   - label: Visible text. Also the accessibility label when `showsLabel` is `false`.
-    ///   - variant: `.filled`, `.outlined` or `.text`.
+    ///   - label: Visible text. Also the accessibility label when `showsText` is `false`.
+    ///   - type: `.filled`, `.outlined` or `.text`.
     ///   - size: `.large` (48pt) or `.small` (36pt).
     ///   - leftIcon: Optional icon before the label.
     ///   - rightIcon: Optional icon after the label.
-    ///   - showsLabel: `false` makes an icon-only button. Keep `label` set for VoiceOver.
+    ///   - showsText: `false` makes an icon-only button. Keep `label` set for VoiceOver.
     ///   - isFullWidth: Stretch to the width of the container.
     ///   - action: Called on tap. Not called while disabled.
     public init(
         _ label: String,
-        variant: Variant = .filled,
-        size: Size = .large,
+        type: SPButtonType = .filled,
+        size: SPButtonSize = .large,
         leftIcon: SPIconName? = nil,
         rightIcon: SPIconName? = nil,
-        showsLabel: Bool = true,
+        showsText: Bool = true,
         isFullWidth: Bool = false,
         action: @escaping () -> Void
     ) {
         self.label = label
-        self.variant = variant
+        self.type = type
         self.size = size
         self.leftIcon = leftIcon
         self.rightIcon = rightIcon
-        self.showsLabel = showsLabel
+        self.showsText = showsText
         self.isFullWidth = isFullWidth
         self.action = action
     }
@@ -62,16 +62,16 @@ public struct SPButton: View {
         Button(action: action) {
             HStack(spacing: SPSpacing.sm) {
                 if let leftIcon { SPIcon(leftIcon, size: 24) }
-                if showsLabel {
+                if showsText {
                     Text(label)
-                        .spTextStyle(.button)
+                        .spType(.button)
                         .lineLimit(1)
                         .fixedSize()
                 }
                 if let rightIcon { SPIcon(rightIcon, size: 24) }
             }
         }
-        .buttonStyle(SPButtonStyle(variant: variant, size: size, isFullWidth: isFullWidth))
+        .buttonStyle(SPButtonStyle(type: type, size: size, isFullWidth: isFullWidth))
         .accessibilityLabel(label)
     }
 }
@@ -80,28 +80,28 @@ public struct SPButton: View {
 ///
 /// ```swift
 /// Button { … } label: { Label("Share", systemImage: "square.and.arrow.up") }
-///     .buttonStyle(SPButtonStyle(variant: .outlined))
+///     .buttonStyle(SPButtonStyle(type: .outlined))
 /// ```
 public struct SPButtonStyle: ButtonStyle {
-    let variant: SPButton.Variant
-    let size: SPButton.Size
+    let type: SPButtonType
+    let size: SPButtonSize
     let isFullWidth: Bool
 
-    public init(variant: SPButton.Variant = .filled, size: SPButton.Size = .large, isFullWidth: Bool = false) {
-        self.variant = variant
+    public init(type: SPButtonType = .filled, size: SPButtonSize = .large, isFullWidth: Bool = false) {
+        self.type = type
         self.size = size
         self.isFullWidth = isFullWidth
     }
 
     public func makeBody(configuration: Configuration) -> some View {
-        SPButtonBody(configuration: configuration, variant: variant, size: size, isFullWidth: isFullWidth)
+        SPButtonBody(configuration: configuration, type: type, size: size, isFullWidth: isFullWidth)
     }
 }
 
 private struct SPButtonBody: View {
     let configuration: ButtonStyleConfiguration
-    let variant: SPButton.Variant
-    let size: SPButton.Size
+    let type: SPButtonType
+    let size: SPButtonSize
     let isFullWidth: Bool
 
     @Environment(\.isEnabled) private var isEnabled
@@ -114,7 +114,7 @@ private struct SPButtonBody: View {
     }
 
     var body: some View {
-        let colors = SPButtonColors(variant: variant, state: state, isEnabled: isEnabled)
+        let colors = SPButtonColors(type: type, state: state, isEnabled: isEnabled)
         let radius = isEnabled && state == .pressed ? SPRadius.full : SPRadius.md
         let shape = RoundedRectangle(cornerRadius: radius, style: .continuous)
 
@@ -142,54 +142,54 @@ struct SPButtonColors {
     var border: Color = .clear
     var hasShadow = false
 
-    init(variant: SPButton.Variant, state: SPInteractionState, isEnabled: Bool) {
-        switch variant {
+    init(type: SPButtonType, state: SPInteractionState, isEnabled: Bool) {
+        switch type {
         case .filled:
             guard isEnabled else {
-                background = .spSurfaceDisabled
-                foreground = .spTextOnDisabled
+                background = SPColor.surfaceDisabled
+                foreground = SPColor.textOnDisabled
                 return
             }
-            foreground = .spTextInverse
-            background = state == .default ? .spSurfaceBrand : .spActionBrandBorder
+            foreground = SPColor.textInverse
+            background = state == .default ? SPColor.surfaceBrand : SPColor.actionBrandBorder
             hasShadow = true
 
         case .outlined:
             guard isEnabled else {
-                foreground = .spTextDisabled
-                border = .spBorderDisabled
+                foreground = SPColor.textDisabled
+                border = SPColor.borderDisabled
                 return
             }
             switch state {
             case .default:
-                foreground = .spTextBrand
-                border = .spBorderDefault
+                foreground = SPColor.textBrand
+                border = SPColor.borderDefault
             case .hover, .pressed:
-                foreground = .spActionBrandText
-                border = .spActionBrandBorder
-                background = .spSurfaceHoverBg
+                foreground = SPColor.actionBrandText
+                border = SPColor.actionBrandBorder
+                background = SPColor.surfaceHoverBg
             case .focus:
-                foreground = .spActionBrandText
-                border = .spActionBrandBorder
+                foreground = SPColor.actionBrandText
+                border = SPColor.actionBrandBorder
             }
 
         case .text:
             guard isEnabled else {
-                foreground = .spTextDisabled
+                foreground = SPColor.textDisabled
                 return
             }
             switch state {
             case .default:
-                foreground = .spTextBrand
+                foreground = SPColor.textBrand
             case .hover:
-                foreground = .spActionBrandText
-                background = .spSurfaceHoverBg
+                foreground = SPColor.actionBrandText
+                background = SPColor.surfaceHoverBg
             case .pressed:
-                foreground = .spActionBrandText
-                background = .spSurfaceHoverBg
-                border = .spActionBrandBorder
+                foreground = SPColor.actionBrandText
+                background = SPColor.surfaceHoverBg
+                border = SPColor.actionBrandBorder
             case .focus:
-                foreground = .spActionBrandText
+                foreground = SPColor.actionBrandText
             }
         }
     }
@@ -205,11 +205,11 @@ extension View {
 struct SPButton_Previews: PreviewProvider {
     static var previews: some View {
         VStack(alignment: .leading, spacing: SPSpacing.md) {
-            ForEach(SPButton.Variant.allCases, id: \.self) { variant in
+            ForEach(SPButtonType.allCases, id: \.self) { type in
                 HStack(spacing: SPSpacing.md) {
-                    SPButton("Button", variant: variant) {}
-                    SPButton("Button", variant: variant, size: .small, leftIcon: .arrowLeft) {}
-                    SPButton("Button", variant: variant) {}.disabled(true)
+                    SPButton("Button", type: type) {}
+                    SPButton("Button", type: type, size: .small, leftIcon: .arrowLeft) {}
+                    SPButton("Button", type: type) {}.disabled(true)
                 }
             }
             HStack(spacing: SPSpacing.md) {

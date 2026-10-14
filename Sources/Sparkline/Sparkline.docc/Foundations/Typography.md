@@ -4,12 +4,12 @@ Text styles built on Roboto that scale with Dynamic Type and step up on iPad.
 
 ## Overview
 
-Sparkline's type scale has eleven named styles. Apply one with `.spTextStyle(_:)`, which sets the font, weight, line height and letter spacing together:
+Sparkline's type scale has eleven named styles. Apply one with `.spType(_:)`, which sets the font, weight, line height and letter spacing together:
 
 ```swift
 Text("Open a CD")
-    .spTextStyle(.headline4)
-    .foregroundStyle(.spTextPrimary)
+    .spType(.headline4)
+    .foregroundStyle(SPColor.textPrimary)
 ```
 
 ## The scale
@@ -36,11 +36,11 @@ Every style is built with `Font.custom(_:size:relativeTo:)`, so it grows and shr
 
 ## Families
 
-``SPFontFamily/primary`` (Roboto) is used by every style. ``SPFontFamily/secondary`` (Manrope) is available for marketing headings:
+``SPFontFamily/base`` (Roboto, `--type-font-family-base`) is used by every style. ``SPFontFamily/secondary`` (Manrope) is available for marketing headings:
 
 ```swift
 Text("Grow your savings")
-    .spTextStyle(.display, family: .secondary)
+    .spType(.display, family: .secondary)
 ```
 
 Call ``SPFonts/register()`` once at launch so the bundled fonts are available.

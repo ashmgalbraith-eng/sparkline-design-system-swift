@@ -31,13 +31,13 @@ struct MyApp: App {
 ```swift
 import Sparkline
 
-SPInput("Email", text: $email, contentType: .email)
-SPCheckbox("I agree to the account disclosures", isOn: $agreed)
+SPInput("Email", value: $email, type: .email)
+SPCheckbox("I agree to the account disclosures", isChecked: $agreed)
 SPButton("Open account", isFullWidth: true) { submit() }
     .disabled(!agreed)
 ```
 
-Style your own views with tokens: `.foregroundStyle(.spTextPrimary)`, `.padding(SPSpacing.md)`, `.spTextStyle(.headline4)`.
+Style your own views with tokens: `.foregroundStyle(SPColor.textPrimary)`, `.padding(SPSpacing.md)`, `.spType(.headline4)`.
 
 ## Explore
 
@@ -47,11 +47,12 @@ Style your own views with tokens: `.foregroundStyle(.spTextPrimary)`, `.padding(
 
 ## Keeping in sync with the web design system
 
-Colors and icons are generated from the Angular repo (`../sparkline-design-system`):
+Tokens and icons are generated from the Angular repo (`../sparkline-design-system`) under the same names (`--color-surface-brand` is `SPColor.surfaceBrand`), and every Angular input is mapped to its Swift parameter in [`docs/parity.md`](docs/parity.md):
 
 ```bash
 node scripts/generate-tokens.mjs
 node scripts/generate-icons.mjs
+node scripts/check-parity.mjs
 node scripts/build-agent-docs.mjs
 ```
 

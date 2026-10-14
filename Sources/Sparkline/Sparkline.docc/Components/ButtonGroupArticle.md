@@ -14,16 +14,16 @@
 
 ## Parameters
 
-`SPButtonGroup(selection:items:size:showsLabels:)`
+`SPButtonGroup(selection:items:size:showsLabel:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `selection` | `Binding<Value>` | required | The selected item's value. |
-| `items` | `[SPButtonGroup<Value>.Item]` | required | `.init(value, label:leftIcon:rightIcon:)`. Icons are per item and optional. |
-| `size` | `SPButtonGroupSize` | `.large` | `.large` (48pt) or `.small` (36pt). |
-| `showsLabels` | `Bool` | `true` | `false` shows icons only; labels stay as VoiceOver labels. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `selection` | `Binding<Value>` | required | `activeIndex`, `selectionChange` | The selected item's value. |
+| `items` | `[SPButtonGroup<Value>.Item]` | required | `items`, `showLeftIcon`, `showRightIcon` | `.init(value, label:leftIcon:rightIcon:)`. Icons are per item and optional. |
+| `size` | `SPButtonGroupSize` | `.large` | `size` | `.large` (48pt) or `.small` (36pt). |
+| `showsLabel` | `Bool` | `true` | `showLabel` | `false` shows icons only; labels stay as VoiceOver labels. |
 
-Disable the whole group with `.disabled(true)`.
+Disable the whole group with `.disabled(true)` (the web's `disabled`).
 
 ## Behavior
 

@@ -8,20 +8,20 @@
 
 ## Don't use it for
 
-- Exact amounts the user must type. Use `SPInput` with `contentType: .decimal`, or pair the slider with one.
+- Exact amounts the user must type. Use `SPInput` with `type: .decimal`, or pair the slider with one.
 - A small set of named choices. Use `SPButtonGroup` or `SPRadioGroup`.
 
 ## Parameters
 
 `SPSlider(_ label:value:in:step:showsValue:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | VoiceOver label. Not shown; put a visible label above. |
-| `value` | `Binding<Double>` | required | |
-| `range` (`in:`) | `ClosedRange<Double>` | `0...100` | |
-| `step` | `Double` | `1` | `0` for continuous values. |
-| `showsValue` | `Bool` | `false` | Shows the raw number to the right, unformatted. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | (none) | VoiceOver label. Not shown; put a visible label above. |
+| `value` | `Binding<Double>` | required | `value`, `valueChange` | |
+| `range` (`in:`) | `ClosedRange<Double>` | `0...100` | `min`, `max` | |
+| `step` | `Double` | `1` | `step` | `0` for continuous values. |
+| `showsValue` | `Bool` | `false` | `showValue` | Shows the raw number to the right, unformatted. |
 
 Disable with `.disabled(true)`.
 
@@ -40,9 +40,9 @@ Disable with `.disabled(true)`.
 
 ```swift
 VStack(alignment: .leading, spacing: SPSpacing.sm) {
-    Text("Deposit amount").spTextStyle(.body2).foregroundStyle(.spTextSecondary)
+    Text("Deposit amount").spType(.body2).foregroundStyle(SPColor.textSecondary)
     Text(deposit, format: .currency(code: "USD").precision(.fractionLength(0)))
-        .spTextStyle(.headline3)
+        .spType(.headline3)
     SPSlider("Deposit amount", value: $deposit, in: 500...50_000, step: 500)
 }
 ```

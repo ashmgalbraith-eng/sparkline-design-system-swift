@@ -1,15 +1,21 @@
 import SwiftUI
 import Sparkline
 
+// Every page mirrors its Storybook stories: the playground is the Playground
+// story, and each section is named after one story (Types, Sizes, States, …).
+
+/// The photo the web Storybook uses for its Avatar stories.
+private let sampleAvatarURL = URL(string: "https://i.pravatar.cc/96")
+
 // MARK: - Actions
 
 struct ButtonPage: View {
     @State private var label = "Button"
-    @State private var variant: SPButton.Variant = .filled
-    @State private var size: SPButton.Size = .large
+    @State private var type: SPButtonType = .filled
+    @State private var size: SPButtonSize = .large
     @State private var leftIcon: SPIconName?
     @State private var rightIcon: SPIconName?
-    @State private var showsLabel = true
+    @State private var showsText = true
     @State private var isFullWidth = false
     @State private var isDisabled = false
     @State private var taps = 0
@@ -17,38 +23,50 @@ struct ButtonPage: View {
     var body: some View {
         ComponentPage(summary: "Triggers an action. Filled is the primary action (one per view), outlined is secondary, text is tertiary or inline.") {
             VStack(spacing: SPSpacing.sm) {
-                SPButton(label, variant: variant, size: size, leftIcon: leftIcon, rightIcon: rightIcon,
-                         showsLabel: showsLabel, isFullWidth: isFullWidth) { taps += 1 }
+                SPButton(label, type: type, size: size, leftIcon: leftIcon, rightIcon: rightIcon,
+                         showsText: showsText, isFullWidth: isFullWidth) { taps += 1 }
                     .disabled(isDisabled)
-                Text("Tapped \(taps)×").spTextStyle(.caption).foregroundStyle(.spTextSecondary)
+                Text("Tapped \(taps)×").spType(.caption).foregroundStyle(SPColor.textSecondary)
             }
         } controls: {
             LabeledContent("Label") { TextField("Label", text: $label).frame(maxWidth: 240) }
-            OptionPicker("Variant", value: $variant, options: SPButton.Variant.allCases)
-            OptionPicker("Size", value: $size, options: SPButton.Size.allCases)
+            OptionPicker("Type", value: $type, options: SPButtonType.allCases)
+            OptionPicker("Size", value: $size, options: SPButtonSize.allCases)
             IconPicker(title: "Left icon", icon: $leftIcon)
             IconPicker(title: "Right icon", icon: $rightIcon)
-            Toggle("Shows label", isOn: $showsLabel)
+            Toggle("Shows text", isOn: $showsText)
             Toggle("Full width", isOn: $isFullWidth)
             Toggle("Disabled", isOn: $isDisabled)
         } sections: {
-            CatalogSection("States") {
-                ForEach(SPButton.Variant.allCases, id: \.self) { variant in
-                    SpecimenRow {
-                        ForEach(SPInteractionState.allCases, id: \.self) { state in
-                            Specimen(state.rawValue) { SPButton("Button", variant: variant) {}.spInteractionState(state) }
-                        }
-                        Specimen("disabled") { SPButton("Button", variant: variant) {}.disabled(true) }
+            CatalogSection("Types") {
+                SpecimenRow {
+                    ForEach(SPButtonType.allCases, id: \.self) { type in
+                        Specimen(type.rawValue) { SPButton("Button", type: type) {} }
                     }
                 }
             }
-            CatalogSection("Sizes and icons") {
+            CatalogSection("Sizes") {
                 SpecimenRow {
-                    Specimen("large") { SPButton("Button") {} }
-                    Specimen("small") { SPButton("Button", size: .small) {} }
-                    Specimen("left icon") { SPButton("Back", variant: .outlined, leftIcon: .arrowLeft) {} }
+                    ForEach(SPButtonSize.allCases, id: \.self) { size in
+                        Specimen(size.rawValue) { SPButton("Button", size: size) {} }
+                    }
+                }
+            }
+            CatalogSection("States") {
+                ForEach(SPButtonType.allCases, id: \.self) { type in
+                    SpecimenRow {
+                        ForEach(SPInteractionState.allCases, id: \.self) { state in
+                            Specimen(state.rawValue) { SPButton("Button", type: type) {}.spInteractionState(state) }
+                        }
+                        Specimen("disabled") { SPButton("Button", type: type) {}.disabled(true) }
+                    }
+                }
+            }
+            CatalogSection("With icons") {
+                SpecimenRow {
+                    Specimen("left icon") { SPButton("Back", type: .outlined, leftIcon: .arrowLeft) {} }
                     Specimen("right icon") { SPButton("Next", rightIcon: .arrowRight) {} }
-                    Specimen("icon only") { SPButton("Add", leftIcon: .plusCircleOutline, showsLabel: false) {} }
+                    Specimen("icon only") { SPButton("Add", leftIcon: .plusCircleOutline, showsText: false) {} }
                 }
             }
         }
@@ -59,42 +77,61 @@ struct ButtonGroupPage: View {
     @State private var selection = 0
     @State private var count = 3
     @State private var size: SPButtonGroupSize = .large
-    @State private var showsLabels = true
+    @State private var showsLabel = true
     @State private var showsLeftIcon = false
     @State private var showsRightIcon = false
     @State private var isDisabled = false
 
-    private func items(_ n: Int) -> [SPButtonGroup<Int>.Item] {
+    private func items(_ n: Int, leftIcon: Bool = false, rightIcon: Bool = false) -> [SPButtonGroup<Int>.Item] {
         (0..<n).map {
             .init($0, label: "Option \($0 + 1)",
-                  leftIcon: showsLeftIcon ? .arrowLeft : nil,
-                  rightIcon: showsRightIcon ? .arrowRight : nil)
+                  leftIcon: leftIcon ? .arrowLeft : nil,
+                  rightIcon: rightIcon ? .arrowRight : nil)
         }
     }
 
     var body: some View {
         ComponentPage(summary: "A segmented control: connected buttons where exactly one is selected. For switching between two to four short views or modes.") {
-            SPButtonGroup(selection: $selection, items: items(count), size: size, showsLabels: showsLabels)
+            SPButtonGroup(selection: $selection, items: items(count, leftIcon: showsLeftIcon, rightIcon: showsRightIcon),
+                          size: size, showsLabel: showsLabel)
                 .disabled(isDisabled)
         } controls: {
             Stepper("Buttons: \(count)", value: $count, in: 2...5)
                 .onChange(of: count) { selection = min(selection, count - 1) }
             OptionPicker("Size", value: $size, options: SPButtonGroupSize.allCases)
-            Toggle("Shows labels", isOn: $showsLabels)
+            Toggle("Shows label", isOn: $showsLabel)
             Toggle("Left icons", isOn: $showsLeftIcon)
             Toggle("Right icons", isOn: $showsRightIcon)
             Toggle("Disabled", isOn: $isDisabled)
         } sections: {
-            CatalogSection("Variants") {
+            CatalogSection("Sizes") {
                 VStack(alignment: .leading, spacing: SPSpacing.md) {
-                    Specimen("large") { SPButtonGroup(selection: .constant(0), items: (0..<2).map { .init($0, label: "Button") }) }
-                    Specimen("small") { SPButtonGroup(selection: .constant(1), items: (0..<3).map { .init($0, label: "Button") }, size: .small) }
+                    ForEach(SPButtonGroupSize.allCases, id: \.self) { size in
+                        Specimen(size.rawValue) { SPButtonGroup(selection: .constant(0), items: items(3), size: size) }
+                    }
+                }
+            }
+            CatalogSection("Icon variants") {
+                VStack(alignment: .leading, spacing: SPSpacing.md) {
+                    Specimen("left icons") { SPButtonGroup(selection: .constant(0), items: items(2, leftIcon: true)) }
+                    Specimen("right icons") { SPButtonGroup(selection: .constant(0), items: items(2, rightIcon: true)) }
                     Specimen("icons only") {
                         SPButtonGroup(selection: .constant(0), items: [
                             .init(0, label: "List", leftIcon: .menu), .init(1, label: "Map", leftIcon: .mapMarkerOutline),
-                        ], showsLabels: false)
+                        ], showsLabel: false)
                     }
-                    Specimen("disabled") { SPButtonGroup(selection: .constant(0), items: (0..<2).map { .init($0, label: "Button") }).disabled(true) }
+                }
+            }
+            CatalogSection("Disabled") {
+                SPButtonGroup(selection: .constant(0), items: items(3)).disabled(true)
+            }
+            CatalogSection("Button counts") {
+                VStack(alignment: .leading, spacing: SPSpacing.md) {
+                    ForEach(2...5, id: \.self) { n in
+                        Specimen("\(n) buttons") {
+                            SPButtonGroup(selection: .constant(0), items: (0..<n).map { .init($0, label: "Button") }, size: .small)
+                        }
+                    }
                 }
             }
         }
@@ -123,9 +160,16 @@ struct ChipPage: View {
             IconPicker(title: "Right icon", icon: $rightIcon)
             Toggle("Disabled", isOn: $isDisabled)
         } sections: {
+            CatalogSection("Types") {
+                SpecimenRow {
+                    Specimen("plain") { SPChip("Chip") }
+                    Specimen("plain, icons") { SPChip("Chip", leftIcon: .checkCircleOutline, rightIcon: .menuDownOutline) }
+                    Specimen("clearable") { SPChip("Chip", onRemove: {}) }
+                }
+            }
             CatalogSection("States") {
                 SpecimenRow {
-                    ForEach([SPInteractionState.default, .hover, .pressed, .focus], id: \.self) { state in
+                    ForEach(SPInteractionState.allCases, id: \.self) { state in
                         Specimen(state.rawValue) { SPChip("Chip").spInteractionState(state) }
                     }
                     Specimen("disabled") { SPChip("Chip", onRemove: {}).disabled(true) }
@@ -136,7 +180,7 @@ struct ChipPage: View {
                     ForEach(filters, id: \.self) { filter in
                         SPChip(filter) { filters.removeAll { $0 == filter } }
                     }
-                    SPButton("Reset", variant: .text, size: .small) {
+                    SPButton("Reset", type: .text, size: .small) {
                         filters = ["Savings", "CDs", "12 months", "No minimum"]
                     }
                 }
@@ -148,51 +192,57 @@ struct ChipPage: View {
 // MARK: - Display
 
 struct AvatarPage: View {
-    @State private var kind = "initials"
+    private enum Kind: String, CaseIterable { case text, image, icon }
+
+    @State private var kind = Kind.text
     @State private var initials = "AG"
-    @State private var size: SPAvatar.Size = .large
+    @State private var size: SPAvatarSize = .large
     @State private var showsStatus = false
-    @State private var status: SPBadge.Status = .success
+    @State private var statusColor: SPBadgeStatus = .success
     @State private var showsNotification = false
     @State private var count = "3"
 
-    private var content: SPAvatar.Content {
-        kind == "icon" ? .icon : .initials(initials)
+    private var type: SPAvatarType {
+        switch kind {
+        case .text: return .text(initials)
+        case .image: return .imageURL(sampleAvatarURL)
+        case .icon: return .icon
+        }
     }
 
     var body: some View {
         ComponentPage(summary: "A small circular representation of a person: initials, a photo or the account icon, with an optional status dot or count.") {
-            SPAvatar(content, size: size, status: showsStatus ? status : nil,
+            SPAvatar(type: type, size: size, statusColor: showsStatus ? statusColor : nil,
                      notificationCount: showsNotification ? count : nil, accessibilityLabel: "Ash Galbraith")
                 .padding(SPSpacing.md)
         } controls: {
-            LabeledContent("Content") {
-                Picker("Content", selection: $kind) {
-                    Text("initials").tag("initials")
-                    Text("icon").tag("icon")
-                }
-                .pickerStyle(.segmented).labelsHidden().frame(maxWidth: 240)
-            }
+            OptionPicker("Type", value: $kind, options: Kind.allCases)
             LabeledContent("Initials") { TextField("Initials", text: $initials).frame(maxWidth: 120) }
-            OptionPicker("Size", value: $size, options: SPAvatar.Size.allCases)
+            OptionPicker("Size", value: $size, options: SPAvatarSize.allCases)
             Toggle("Status", isOn: $showsStatus)
-            OptionPicker("Status color", value: $status, options: SPBadge.Status.allCases)
+            OptionPicker("Status color", value: $statusColor, options: SPBadgeStatus.allCases)
             Toggle("Notification", isOn: $showsNotification)
             LabeledContent("Count") { TextField("Count", text: $count).frame(maxWidth: 120) }
         } sections: {
             CatalogSection("Sizes") {
                 SpecimenRow {
-                    ForEach(SPAvatar.Size.allCases, id: \.self) { size in
-                        Specimen(size.rawValue) { SPAvatar(.initials("AG"), size: size) }
-                        Specimen("\(size.rawValue) icon") { SPAvatar(.icon, size: size) }
+                    ForEach(SPAvatarSize.allCases, id: \.self) { size in
+                        Specimen(size.rawValue) { SPAvatar(type: .text("AG"), size: size) }
                     }
                 }
             }
-            CatalogSection("Badges") {
+            CatalogSection("Types") {
                 SpecimenRow {
-                    ForEach(SPAvatar.Size.allCases, id: \.self) { size in
+                    Specimen("text") { SPAvatar(type: .text("AG"), size: .large) }
+                    Specimen("image") { SPAvatar(type: .imageURL(sampleAvatarURL), size: .large) }
+                    Specimen("icon") { SPAvatar(type: .icon, size: .large) }
+                }
+            }
+            CatalogSection("With badge") {
+                SpecimenRow {
+                    ForEach(SPAvatarSize.allCases, id: \.self) { size in
                         Specimen(size.rawValue) {
-                            SPAvatar(.initials("AG"), size: size, status: .success, notificationCount: "999+")
+                            SPAvatar(type: .imageURL(sampleAvatarURL), size: size, statusColor: .success, notificationCount: "999+")
                                 .padding(.top, SPSpacing.md)
                                 .padding(.trailing, SPSpacing.xl)
                         }
@@ -205,30 +255,37 @@ struct AvatarPage: View {
 
 struct BadgePage: View {
     @State private var label = "9"
-    @State private var variant: SPBadge.Variant = .numeric
-    @State private var status: SPBadge.Status = .notification
+    @State private var type: SPBadgeType = .numeric
+    @State private var status: SPBadgeStatus = .notification
 
     var body: some View {
         ComponentPage(summary: "A small status marker: a numeric count or a colored dot. Pair a dot with text; color alone carries its meaning.") {
-            SPBadge(label, variant: variant, status: status)
+            SPBadge(label, type: type, status: status)
         } controls: {
             LabeledContent("Label") { TextField("Label", text: $label).frame(maxWidth: 120) }
-            OptionPicker("Variant", value: $variant, options: SPBadge.Variant.allCases)
-            OptionPicker("Status", value: $status, options: SPBadge.Status.allCases)
+            OptionPicker("Type", value: $type, options: SPBadgeType.allCases)
+            OptionPicker("Status", value: $status, options: SPBadgeStatus.allCases)
         } sections: {
-            CatalogSection("Statuses") {
+            CatalogSection("Types") {
                 SpecimenRow {
-                    ForEach(SPBadge.Status.allCases, id: \.self) { status in
+                    Specimen("numeric") { SPBadge("9") }
+                    Specimen("numeric, long") { SPBadge("999+") }
+                    Specimen("dot") { SPBadge.dot(.notification) }
+                }
+            }
+            CatalogSection("Status colors") {
+                SpecimenRow {
+                    ForEach(SPBadgeStatus.allCases, id: \.self) { status in
                         Specimen(status.rawValue) { SPBadge("9", status: status) }
                     }
-                    ForEach(SPBadge.Status.allCases, id: \.self) { status in
+                    ForEach(SPBadgeStatus.allCases, id: \.self) { status in
                         Specimen(status.rawValue) { SPBadge.dot(status) }
                     }
                 }
             }
             CatalogSection("On an icon") {
                 SPIcon(.bellOutline)
-                    .foregroundStyle(.spTextPrimary)
+                    .foregroundStyle(SPColor.textPrimary)
                     .overlay(alignment: .topTrailing) { SPBadge("3").offset(x: 10, y: -8) }
                     .padding(SPSpacing.md)
             }
@@ -243,8 +300,8 @@ struct CardPage: View {
     var body: some View {
         ComponentPage(summary: "A container surface for grouping related content. It draws only the surface; you supply the content.") {
             SPCard(variant: variant, padding: padding) {
-                Text("12-month CD").spTextStyle(.subtitle1).foregroundStyle(.spTextPrimary)
-                Text("4.85% APY · $500 minimum").spTextStyle(.body2).foregroundStyle(.spTextSecondary)
+                Text("12-month CD").spType(.subtitle1).foregroundStyle(SPColor.textPrimary)
+                Text("4.85% APY · $500 minimum").spType(.body2).foregroundStyle(SPColor.textSecondary)
             }
             .frame(maxWidth: 360)
         } controls: {
@@ -256,7 +313,7 @@ struct CardPage: View {
                     ForEach(SPCardVariant.allCases, id: \.self) { variant in
                         Specimen(variant.rawValue) {
                             SPCard(variant: variant) {
-                                Text(variant.rawValue.capitalized).spTextStyle(.body1).foregroundStyle(.spTextPrimary)
+                                Text(variant.rawValue.capitalized).spType(.body1).foregroundStyle(SPColor.textPrimary)
                             }
                             .frame(width: 200)
                         }
@@ -267,13 +324,13 @@ struct CardPage: View {
                 SPCard(variant: .outlined, padding: .none) {
                     ForEach([("Term", "12 months"), ("APY", "4.85%"), ("Deposit", "$5,000")], id: \.0) { key, value in
                         HStack {
-                            Text(key).foregroundStyle(.spTextSecondary)
+                            Text(key).foregroundStyle(SPColor.textSecondary)
                             Spacer()
-                            Text(value).foregroundStyle(.spTextPrimary)
+                            Text(value).foregroundStyle(SPColor.textPrimary)
                         }
-                        .spTextStyle(.body2)
+                        .spType(.body2)
                         .padding(SPSpacing.md)
-                        if key != "Deposit" { Divider().overlay(Color.spBorderSubtle) }
+                        if key != "Deposit" { Divider().overlay(SPColor.borderSubtle) }
                     }
                 }
                 .frame(maxWidth: 360)
@@ -287,8 +344,8 @@ struct IconPage: View {
     @State private var size: Double = 24
 
     var body: some View {
-        ComponentPage(summary: "Renders an icon from the Sparkline registry. It fills with the current foreground style.") {
-            SPIcon(icon ?? .check, size: size).foregroundStyle(.spTextBrand)
+        ComponentPage(summary: "Renders an icon from the Sparkline registry. It fills with the current foreground style. Every icon is in Foundations › Icon Gallery.") {
+            SPIcon(icon ?? .check, size: size).foregroundStyle(SPColor.textBrand)
         } controls: {
             IconPicker(title: "Name", icon: $icon)
             LabeledContent("Size: \(Int(size))pt") { Slider(value: $size, in: 12...64, step: 4).frame(maxWidth: 240) }
@@ -296,16 +353,16 @@ struct IconPage: View {
             CatalogSection("Sizes") {
                 SpecimenRow {
                     ForEach([16, 20, 24, 32], id: \.self) { s in
-                        Specimen("\(s)pt") { SPIcon(.bellOutline, size: CGFloat(s)).foregroundStyle(.spTextPrimary) }
+                        Specimen("\(s)pt") { SPIcon(.bellOutline, size: CGFloat(s)).foregroundStyle(SPColor.textPrimary) }
                     }
                 }
             }
             CatalogSection("Colors") {
                 SpecimenRow {
-                    Specimen("spTextPrimary") { SPIcon(.checkCircleOutline).foregroundStyle(.spTextPrimary) }
-                    Specimen("spTextBrand") { SPIcon(.checkCircleOutline).foregroundStyle(.spTextBrand) }
-                    Specimen("spTextSuccess") { SPIcon(.checkCircleOutline).foregroundStyle(.spTextSuccess) }
-                    Specimen("spTextError") { SPIcon(.alertCircleOutline).foregroundStyle(.spTextError) }
+                    Specimen("textPrimary") { SPIcon(.checkCircleOutline).foregroundStyle(SPColor.textPrimary) }
+                    Specimen("textBrand") { SPIcon(.checkCircleOutline).foregroundStyle(SPColor.textBrand) }
+                    Specimen("textSuccess") { SPIcon(.checkCircleOutline).foregroundStyle(SPColor.textSuccess) }
+                    Specimen("textError") { SPIcon(.alertCircleOutline).foregroundStyle(SPColor.textError) }
                 }
             }
         }
@@ -314,17 +371,18 @@ struct IconPage: View {
 
 struct StepperPage: View {
     @State private var activeStep = 1
-    @State private var orientation: SPStepper.Orientation = .horizontal
+    @State private var orientation: SPStepperOrientation = .horizontal
     @State private var flagError = false
     @State private var showsDescriptions = false
 
-    private var steps: [SPStepper.Step] {
-        let labels = ["Choose CD", "Personal info", "Verify identity", "Fund account", "Review"]
-        let descriptions = ["12-month CD", "Name and address", "Upload ID", "Link a bank", "Confirm details"]
-        return labels.indices.map { i in
-            SPStepper.Step(labels[i],
-                           description: showsDescriptions ? descriptions[i] : nil,
-                           state: flagError && i == 2 ? .error : nil)
+    private static let labels = ["Choose CD", "Personal info", "Verify identity", "Fund account", "Review"]
+    private static let descriptions = ["12-month CD", "Name and address", "Upload ID", "Link a bank", "Confirm details"]
+
+    private var steps: [SPStepperStep] {
+        Self.labels.indices.map { i in
+            SPStepperStep(Self.labels[i],
+                          description: showsDescriptions ? Self.descriptions[i] : nil,
+                          state: flagError && i == 2 ? .error : nil)
         }
     }
 
@@ -333,7 +391,7 @@ struct StepperPage: View {
             SPStepper(steps: steps, activeStep: activeStep, orientation: orientation)
         } controls: {
             Stepper("Active step: \(activeStep) (zero-based)", value: $activeStep, in: 0...4)
-            OptionPicker("Orientation", value: $orientation, options: SPStepper.Orientation.allCases)
+            OptionPicker("Orientation", value: $orientation, options: SPStepperOrientation.allCases)
             Toggle("Flag step 3 as error", isOn: $flagError)
             Toggle("Descriptions", isOn: $showsDescriptions)
         } sections: {
@@ -341,6 +399,17 @@ struct StepperPage: View {
                 SPStepper(steps: [
                     .init("Completed"), .init("Active"), .init("Error", state: .error), .init("Pending"),
                 ], activeStep: 1)
+            }
+            CatalogSection("Vertical") {
+                SPStepper(steps: Self.labels.indices.map { .init(Self.labels[$0], description: Self.descriptions[$0]) },
+                          activeStep: 2, orientation: .vertical)
+            }
+            CatalogSection("With error") {
+                SPStepper(steps: Self.labels.indices.map { .init(Self.labels[$0], state: $0 == 2 ? .error : nil) },
+                          activeStep: 2)
+            }
+            CatalogSection("All completed") {
+                SPStepper(steps: Self.labels.map { .init($0) }, activeStep: Self.labels.count)
             }
         }
     }
@@ -350,38 +419,41 @@ struct StepperPage: View {
 
 struct CheckboxPage: View {
     @State private var label = "I agree to the account disclosures"
-    @State private var isOn = false
+    @State private var isChecked = false
     @State private var isIndeterminate = false
     @State private var isDisabled = false
     @State private var children = [true, false, false]
 
     var body: some View {
         ComponentPage(summary: "A labeled checkbox for on/off choices and consent, with an indeterminate state for “select all”.") {
-            SPCheckbox(label, isOn: $isOn, isIndeterminate: isIndeterminate)
+            SPCheckbox(label, isChecked: $isChecked, isIndeterminate: isIndeterminate)
                 .disabled(isDisabled)
         } controls: {
             LabeledContent("Label") { TextField("Label", text: $label).frame(maxWidth: 320) }
-            Toggle("Checked", isOn: $isOn)
+            Toggle("Checked", isOn: $isChecked)
             Toggle("Indeterminate", isOn: $isIndeterminate)
             Toggle("Disabled", isOn: $isDisabled)
         } sections: {
-            CatalogSection("States") {
+            CatalogSection("All states") {
                 SpecimenRow {
-                    ForEach(SPInteractionState.allCases, id: \.self) { state in
-                        SPCheckbox(state.rawValue, isOn: .constant(true)).spInteractionState(state)
+                    SPCheckbox("unchecked", isChecked: .constant(false))
+                    SPCheckbox("checked", isChecked: .constant(true))
+                    SPCheckbox("indeterminate", isChecked: .constant(false), isIndeterminate: true)
+                    ForEach(SPInteractionState.allCases.filter { $0 != .default }, id: \.self) { state in
+                        SPCheckbox(state.rawValue, isChecked: .constant(true)).spInteractionState(state)
                     }
-                    SPCheckbox("disabled", isOn: .constant(true)).disabled(true)
-                    SPCheckbox("disabled", isOn: .constant(false)).disabled(true)
+                    SPCheckbox("disabled", isChecked: .constant(true)).disabled(true)
+                    SPCheckbox("disabled", isChecked: .constant(false)).disabled(true)
                 }
             }
             CatalogSection("Select all") {
                 VStack(alignment: .leading, spacing: 0) {
                     SPCheckbox("All accounts",
-                               isOn: Binding(get: { children.allSatisfy { $0 } },
-                                             set: { on in children = children.map { _ in on } }),
+                               isChecked: Binding(get: { children.allSatisfy { $0 } },
+                                                  set: { on in children = children.map { _ in on } }),
                                isIndeterminate: children.contains(true) && children.contains(false))
                     ForEach(children.indices, id: \.self) { i in
-                        SPCheckbox("Account \(i + 1)", isOn: $children[i]).padding(.leading, SPSpacing.lg)
+                        SPCheckbox("Account \(i + 1)", isChecked: $children[i]).padding(.leading, SPSpacing.lg)
                     }
                 }
             }
@@ -403,17 +475,18 @@ struct RadioPage: View {
             ])
             .disabled(isDisabled)
         } controls: {
-            LabeledContent("Selection") { Text(source).foregroundStyle(.spTextSecondary) }
+            LabeledContent("Selection") { Text(source).foregroundStyle(SPColor.textSecondary) }
             Toggle("Disable last option", isOn: $disableLast)
             Toggle("Disable group", isOn: $isDisabled)
         } sections: {
             CatalogSection("States") {
                 SpecimenRow {
+                    SPRadio("unchecked", isChecked: false) {}
                     ForEach(SPInteractionState.allCases, id: \.self) { state in
-                        SPRadio(state.rawValue, isSelected: true) {}.spInteractionState(state)
+                        SPRadio(state.rawValue, isChecked: true) {}.spInteractionState(state)
                     }
-                    SPRadio("disabled", isSelected: true) {}.disabled(true)
-                    SPRadio("disabled", isSelected: false) {}.disabled(true)
+                    SPRadio("disabled", isChecked: true) {}.disabled(true)
+                    SPRadio("disabled", isChecked: false) {}.disabled(true)
                 }
             }
         }
@@ -422,13 +495,13 @@ struct RadioPage: View {
 
 struct SwitchPage: View {
     @State private var label = "Paperless statements"
-    @State private var isOn = true
+    @State private var isChecked = true
     @State private var showsLabel = true
     @State private var isDisabled = false
 
     var body: some View {
         ComponentPage(summary: "An on/off toggle for settings that apply immediately. Use a checkbox for choices saved on submit.") {
-            SPSwitch(label, isOn: $isOn, showsLabel: showsLabel)
+            SPSwitch(label, isChecked: $isChecked, showsLabel: showsLabel)
                 .disabled(isDisabled)
                 .frame(maxWidth: 360)
         } controls: {
@@ -438,10 +511,10 @@ struct SwitchPage: View {
         } sections: {
             CatalogSection("States") {
                 VStack(spacing: SPSpacing.md) {
-                    SPSwitch("On", isOn: .constant(true))
-                    SPSwitch("Off", isOn: .constant(false))
-                    SPSwitch("Disabled on", isOn: .constant(true)).disabled(true)
-                    SPSwitch("Disabled off", isOn: .constant(false)).disabled(true)
+                    SPSwitch("On", isChecked: .constant(true))
+                    SPSwitch("Off", isChecked: .constant(false))
+                    SPSwitch("Disabled on", isChecked: .constant(true)).disabled(true)
+                    SPSwitch("Disabled off", isChecked: .constant(false)).disabled(true)
                     Toggle("Plain Toggle with .toggleStyle(.sparkline)", isOn: .constant(true)).toggleStyle(.sparkline)
                 }
                 .frame(maxWidth: 420)
@@ -451,22 +524,22 @@ struct SwitchPage: View {
 }
 
 struct InputPage: View {
-    @State private var text = ""
+    @State private var value = ""
     @State private var label = "Email"
     @State private var placeholder = "name@example.com"
     @State private var helperText = "We'll send your statements here"
     @State private var errorText = "Enter a valid email address"
-    @State private var state: SPInput.State = .default
-    @State private var contentType: SPInput.ContentType = .email
-    @State private var isOptional = false
+    @State private var state: SPInputState = .default
+    @State private var type: SPInputType = .email
+    @State private var showsOptional = false
     @State private var leftIcon: SPIconName? = .emailOutline
     @State private var rightIcon: SPIconName?
     @State private var isDisabled = false
 
     var body: some View {
         ComponentPage(summary: "A single-line text field with a label, helper or error text, and optional icons. It fills the width of its container.") {
-            SPInput(label, text: $text, placeholder: placeholder, helperText: helperText, errorText: errorText,
-                    state: state, isOptional: isOptional, contentType: contentType, leftIcon: leftIcon, rightIcon: rightIcon)
+            SPInput(label, value: $value, placeholder: placeholder, helperText: helperText, errorText: errorText,
+                    state: state, showsOptional: showsOptional, type: type, leftIcon: leftIcon, rightIcon: rightIcon)
                 .disabled(isDisabled)
                 .frame(maxWidth: 360)
         } controls: {
@@ -474,19 +547,28 @@ struct InputPage: View {
             LabeledContent("Placeholder") { TextField("Placeholder", text: $placeholder).frame(maxWidth: 240) }
             LabeledContent("Helper text") { TextField("Helper", text: $helperText).frame(maxWidth: 240) }
             LabeledContent("Error text") { TextField("Error", text: $errorText).frame(maxWidth: 240) }
-            OptionPicker("State", value: $state, options: SPInput.State.allCases)
-            OptionPicker("Content type", value: $contentType, options: SPInput.ContentType.allCases)
+            OptionPicker("State", value: $state, options: SPInputState.allCases)
+            OptionPicker("Type", value: $type, options: SPInputType.allCases)
             IconPicker(title: "Left icon", icon: $leftIcon)
             IconPicker(title: "Right icon", icon: $rightIcon)
-            Toggle("Optional", isOn: $isOptional)
+            Toggle("Shows optional", isOn: $showsOptional)
             Toggle("Disabled", isOn: $isDisabled)
         } sections: {
             CatalogSection("States") {
                 VStack(spacing: SPSpacing.lg) {
-                    SPInput("Default", text: .constant(""), placeholder: "Placeholder", helperText: "Helper text")
-                    SPInput("Error", text: .constant("ash@"), errorText: "Enter a valid email address", state: .error)
-                    SPInput("Success", text: .constant("ash@example.com"), helperText: "Looks good", state: .success)
-                    SPInput("Disabled", text: .constant("Read only")).disabled(true)
+                    SPInput("Default", value: .constant(""), placeholder: "Placeholder", helperText: "Helper text")
+                    SPInput("Error", value: .constant("ash@"), errorText: "Enter a valid email address", state: .error)
+                    SPInput("Success", value: .constant("ash@example.com"), helperText: "Looks good", state: .success)
+                    SPInput("Middle name", value: .constant(""), showsOptional: true)
+                    SPInput("Disabled", value: .constant("Read only")).disabled(true)
+                }
+                .frame(maxWidth: 360)
+            }
+            CatalogSection("With icons") {
+                VStack(spacing: SPSpacing.lg) {
+                    SPInput("Email", value: .constant(""), placeholder: "name@example.com", type: .email, leftIcon: .emailOutline)
+                    SPInput("Search", value: .constant(""), placeholder: "Search accounts", rightIcon: .searchOutline)
+                    SPInput("Password", value: .constant("secret"), type: .password, leftIcon: .lockOutline, rightIcon: .eyeOutline)
                 }
                 .frame(maxWidth: 360)
             }
@@ -514,10 +596,10 @@ struct SelectPage: View {
         ComponentPage(summary: "A dropdown for choosing one option, or several. The trigger is Sparkline; the list is the native menu.") {
             Group {
                 if multiple {
-                    SPSelect("States", selection: $states, options: stateOptions,
+                    SPSelect("States", value: $states, options: stateOptions,
                              helperText: "Choose any", errorText: "Choose at least one", state: state)
                 } else {
-                    SPSelect("Term length", selection: $term, options: terms,
+                    SPSelect("Term length", value: $term, options: terms,
                              placeholder: "Select term length", helperText: "You can change this later",
                              errorText: "Choose a term", state: state)
                 }
@@ -532,12 +614,19 @@ struct SelectPage: View {
         } sections: {
             CatalogSection("States") {
                 VStack(spacing: SPSpacing.lg) {
-                    SPSelect("Empty", selection: .constant(Int?.none), options: terms)
-                    SPSelect("Selected", selection: .constant(Int?.some(12)), options: terms)
-                    SPSelect("Error", selection: .constant(Int?.none), options: terms, errorText: "Choose a term", state: .error)
-                    SPSelect("Disabled", selection: .constant(Int?.some(6)), options: terms).disabled(true)
+                    SPSelect("Empty", value: .constant(Int?.none), options: terms)
+                    SPSelect("Selected", value: .constant(Int?.some(12)), options: terms)
+                    SPSelect("Disabled", value: .constant(Int?.some(6)), options: terms).disabled(true)
                 }
                 .frame(maxWidth: 360)
+            }
+            CatalogSection("Multi-select") {
+                SPSelect("States", value: .constant(Set(["CA", "TX"])), options: stateOptions, helperText: "Choose any")
+                    .frame(maxWidth: 360)
+            }
+            CatalogSection("With validation") {
+                SPSelect("Term length", value: .constant(Int?.none), options: terms, errorText: "Choose a term", state: .error)
+                    .frame(maxWidth: 360)
             }
         }
     }
@@ -552,10 +641,10 @@ struct SliderPage: View {
     var body: some View {
         ComponentPage(summary: "A range control for approximate values. Show the formatted value yourself; showsValue prints the raw number.") {
             VStack(alignment: .leading, spacing: SPSpacing.sm) {
-                Text("Deposit amount").spTextStyle(.body2).foregroundStyle(.spTextSecondary)
+                Text("Deposit amount").spType(.body2).foregroundStyle(SPColor.textSecondary)
                 Text(value, format: .currency(code: "USD").precision(.fractionLength(0)))
-                    .spTextStyle(.headline3)
-                    .foregroundStyle(.spTextPrimary)
+                    .spType(.headline3)
+                    .foregroundStyle(SPColor.textPrimary)
                 SPSlider("Deposit amount", value: $value, in: 500...50_000, step: step, showsValue: showsValue)
                     .disabled(isDisabled)
             }
@@ -577,9 +666,16 @@ struct SliderPage: View {
                 VStack(spacing: SPSpacing.lg) {
                     SPSlider("Default", value: .constant(30))
                     SPSlider("With value", value: .constant(60), showsValue: true)
-                    SPSlider("Disabled", value: .constant(45)).disabled(true)
                 }
                 .frame(maxWidth: 420)
+            }
+            CatalogSection("Stepped") {
+                SPSlider("Stepped", value: .constant(40), step: 10, showsValue: true)
+                    .frame(maxWidth: 420)
+            }
+            CatalogSection("Disabled") {
+                SPSlider("Disabled", value: .constant(45)).disabled(true)
+                    .frame(maxWidth: 420)
             }
         }
     }

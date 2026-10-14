@@ -49,13 +49,13 @@ public struct SPSlider: View {
                 let x = fraction * geo.size.width
                 ZStack(alignment: .leading) {
                     Capsule()
-                        .fill(Color.spControlTrack)
+                        .fill(SPColor.controlTrack)
                         .frame(height: 4)
                     Capsule()
-                        .fill(isEnabled ? Color.spControlTrackActive : Color.spControlThumbDisabled)
+                        .fill(isEnabled ? SPColor.controlTrackActive : SPColor.controlThumbDisabled)
                         .frame(width: x, height: 4)
                     Circle()
-                        .fill(isEnabled ? Color.spControlTrackActive : Color.spControlThumbDisabled)
+                        .fill(isEnabled ? SPColor.controlTrackActive : SPColor.controlThumbDisabled)
                         .frame(width: thumb, height: thumb)
                         .spShadowIf(isEnabled, .button)
                         .spFocusRing(isFocused && isEnabled, cornerRadius: thumb / 2, lineWidth: 2)
@@ -72,9 +72,9 @@ public struct SPSlider: View {
 
             if showsValue {
                 Text(formatted)
-                    .spTextStyle(.body2)
+                    .spType(.body2)
                     .monospacedDigit()
-                    .foregroundStyle(isEnabled ? Color.spTextPrimary : Color.spTextDisabled)
+                    .foregroundStyle(isEnabled ? SPColor.textPrimary : SPColor.textDisabled)
                     .fixedSize()
             }
         }

@@ -18,20 +18,20 @@ import Sparkline
 
 ## Parameters
 
-`SPAvatar(_ content:size:status:notificationCount:accessibilityLabel:)`
+`SPAvatar(type:size:statusColor:notificationCount:accessibilityLabel:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `content` | `SPAvatar.Content` | `.initials("A")` | `.initials(String)`, `.image(Image)`, `.url(URL?)`, `.icon`. |
-| `size` | `SPAvatar.Size` | `.medium` | `.small` 16pt, `.medium` 24pt, `.large` 32pt. |
-| `status` | `SPBadge.Status?` | `nil` | Adds a colored dot at the bottom right. |
-| `notificationCount` | `String?` | `nil` | Adds a count badge at the top right. Truncated to four characters. |
-| `accessibilityLabel` | `String?` | `nil` | The person's name. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `type` | `SPAvatarType` | `.text("A")` | `type`, `initials`, `imageSrc` | `.text(String)`, `.image(Image)`, `.imageURL(URL?)`, `.icon`. |
+| `size` | `SPAvatarSize` | `.medium` | `size` | `.small` 16pt, `.medium` 24pt, `.large` 32pt. |
+| `statusColor` | `SPBadgeStatus?` | `nil` | `showStatus`, `statusColor` | Adds a status dot at the bottom right. `nil` hides it. |
+| `notificationCount` | `String?` | `nil` | `showNotification`, `notificationCount` | Adds a count badge at the top right. Truncated to four characters. `nil` hides it. |
+| `accessibilityLabel` | `String?` | `nil` | `imageAlt` | The person's name. Labels every type, not only images. |
 
 ## Behavior
 
-- `.initials` shows the first two characters at `.large` and the first one at smaller sizes, uppercased. Pass the letters, not the full name.
-- `.url` loads with `AsyncImage` and shows the account icon while loading or on failure.
+- `.text` shows the first two characters at `.large` and the first one at smaller sizes, uppercased. Pass the letters, not the full name.
+- `.imageURL` downloads the photo with `URLSession` (so it uses the shared URL cache) and shows the account icon while loading or on failure. A load cancelled mid-navigation runs again when the avatar reappears; `AsyncImage` would stay on the icon.
 - VoiceOver reads the name, status and count together ("Ash Galbraith, success, 3 notifications"). With no label, status or count the avatar is hidden as decoration.
 
 ## Gotchas
@@ -43,11 +43,11 @@ import Sparkline
 
 ```swift
 HStack(spacing: SPSpacing.sm) {
-    SPAvatar(.url(review.avatarURL), size: .large, accessibilityLabel: review.name)
-    Text(review.name).spTextStyle(.body2)
+    SPAvatar(type: .imageURL(review.avatarURL), size: .large, accessibilityLabel: review.name)
+    Text(review.name).spType(.body2)
 }
 
-SPAvatar(.initials("AG"), size: .large, status: .success)
+SPAvatar(type: .text("AG"), size: .large, statusColor: .success)
 ```
 
 ## Related

@@ -47,13 +47,13 @@ public struct SPChip: View {
         HStack(spacing: SPSpacing.sm) {
             if let leftIcon { SPIcon(leftIcon, size: 24) }
             Text(label)
-                .spTextStyle(.body2)
+                .spType(.body2)
                 .lineLimit(1)
                 .fixedSize()
             if let onRemove {
                 Button(action: onRemove) {
                     SPIcon(.closeCircleOutline, size: 24)
-                        .foregroundStyle(isEnabled ? Color.spTextSecondary : Color.spTextDisabled)
+                        .foregroundStyle(isEnabled ? SPColor.textSecondary : SPColor.textDisabled)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Remove \(label)")
@@ -73,17 +73,17 @@ public struct SPChip: View {
 }
 
 private struct ChipStyle {
-    var background: Color = .spSurfaceSubtle
-    var foreground: Color = .spTextPrimary
+    var background: Color = SPColor.surfaceSubtle
+    var foreground: Color = SPColor.textPrimary
     var border: Color = .clear
     var borderWidth: CGFloat = 1
     var radius: CGFloat = SPRadius.full
 
     init(state: SPInteractionState, isEnabled: Bool) {
         guard isEnabled else {
-            background = .spSurfaceSubtleDisabled
-            foreground = .spTextDisabled
-            border = .spBorderDisabled
+            background = SPColor.surfaceSubtleDisabled
+            foreground = SPColor.textDisabled
+            border = SPColor.borderDisabled
             borderWidth = 2
             return
         }
@@ -91,12 +91,12 @@ private struct ChipStyle {
         case .default:
             break
         case .hover:
-            border = .spActionStrongBorder
+            border = SPColor.actionStrongBorder
         case .pressed:
-            border = .spActionStrongBorder
+            border = SPColor.actionStrongBorder
             borderWidth = 2
         case .focus:
-            border = .spActionStrongBorder
+            border = SPColor.actionStrongBorder
             borderWidth = 2
             radius = SPRadius.lg
         }

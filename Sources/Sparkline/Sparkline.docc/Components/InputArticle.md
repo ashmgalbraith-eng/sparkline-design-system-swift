@@ -14,21 +14,21 @@
 
 ## Parameters
 
-`SPInput(_ label:text:placeholder:helperText:errorText:state:isOptional:contentType:leftIcon:rightIcon:)`
+`SPInput(_ label:value:placeholder:helperText:errorText:state:showsOptional:type:leftIcon:rightIcon:)`
 
-Arguments after `text` are optional but must keep this order.
+Arguments after `value` are optional but must keep this order.
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | Shown above the field and used as the VoiceOver label. |
-| `text` | `Binding<String>` | required | |
-| `placeholder` | `String` | `""` | Shown while empty. |
-| `helperText` | `String` | `""` | Below the field. Hidden in `.error`; green in `.success`. Read as the VoiceOver hint. |
-| `errorText` | `String` | `""` | Shown only in `.error`. Read as the VoiceOver hint. |
-| `state` | `SPInput.State` | `.default` | `.default`, `.error`, `.success`. Focus is automatic. |
-| `isOptional` | `Bool` | `false` | Appends "(optional)" to the label. |
-| `contentType` | `SPInput.ContentType` | `.text` | `.text`, `.email`, `.phone`, `.number`, `.decimal`, `.password`, `.url`. Sets the keyboard, autofill and autocorrection; `.password` uses a `SecureField`. |
-| `leftIcon` / `rightIcon` | `SPIconName?` | `nil` | Decorative. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | `label` | Shown above the field and used as the VoiceOver label. |
+| `value` | `Binding<String>` | required | `valueChange` | The field's text. |
+| `placeholder` | `String` | `""` | `placeholder` | Shown while empty. (The web default is "Placeholder".) |
+| `helperText` | `String` | `""` | `helperText` | Below the field. Hidden in `.error`; green in `.success`. Read as the VoiceOver hint. |
+| `errorText` | `String` | `""` | `errorText` | Shown only in `.error`. Read as the VoiceOver hint. |
+| `state` | `SPInputState` | `.default` | `state` | `.default`, `.error`, `.success`. Focus and disabled are automatic. |
+| `showsOptional` | `Bool` | `false` | `showOptional` | Appends "(optional)" to the label. |
+| `type` | `SPInputType` | `.text` | `type` | `.text`, `.email`, `.phone`, `.number`, `.decimal`, `.password`, `.url`. Sets the keyboard, autofill and autocorrection; `.password` uses a `SecureField`. |
+| `leftIcon` / `rightIcon` | `SPIconName?` | `nil` | `showLeftIcon` + `leftIconName`, `showRightIcon` + `rightIconName` | Decorative. `nil` hides it. |
 
 Disable with `.disabled(true)`.
 
@@ -46,11 +46,11 @@ Disable with `.disabled(true)`.
 ## Example
 
 ```swift
-SPInput("Email", text: $email,
+SPInput("Email", value: $email,
         placeholder: "name@example.com",
         errorText: "Enter a valid email address",
         state: emailInvalid ? .error : .default,
-        contentType: .email,
+        type: .email,
         leftIcon: .emailOutline)
 ```
 

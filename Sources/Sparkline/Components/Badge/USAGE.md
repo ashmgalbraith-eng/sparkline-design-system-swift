@@ -17,13 +17,13 @@ import Sparkline
 
 ## Parameters
 
-`SPBadge(_ label:variant:status:)` and `SPBadge.dot(_ status:)`
+`SPBadge(_ label:type:status:)` and `SPBadge.dot(_ status:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | `"9"` | The count. Only shown for `.numeric`. Keep it short ("9", "99+"). |
-| `variant` | `SPBadge.Variant` | `.numeric` | `.numeric` or `.dot`. |
-| `status` | `SPBadge.Status` | `.notification` | `.success`, `.error`, `.warning`, `.info`, `.notification`. Sets the color. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | `"9"` | `label` | The count. Only shown for `.numeric`. Keep it short ("9", "99+"). |
+| `type` | `SPBadgeType` | `.numeric` | `type` | `.numeric` or `.dot`. |
+| `status` | `SPBadgeStatus` | `.notification` | `status` | `.success`, `.error`, `.warning`, `.info`, `.notification`. Sets the color. |
 
 ## Gotchas
 
@@ -35,7 +35,7 @@ import Sparkline
 
 ```swift
 SPIcon(.bellOutline)
-    .foregroundStyle(.spTextPrimary)
+    .foregroundStyle(SPColor.textPrimary)
     .overlay(alignment: .topTrailing) {
         SPBadge("3").offset(x: 10, y: -8)
     }

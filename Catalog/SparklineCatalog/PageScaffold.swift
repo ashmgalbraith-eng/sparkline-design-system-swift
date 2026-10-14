@@ -13,17 +13,17 @@ struct ComponentPage<Preview: View, Controls: View, Sections: View>: View {
         ScrollView {
             VStack(alignment: .leading, spacing: SPSpacing.xl) {
                 Text(summary)
-                    .spTextStyle(.body1)
-                    .foregroundStyle(.spTextSecondary)
+                    .spType(.body1)
+                    .foregroundStyle(SPColor.textSecondary)
 
                 CatalogSection("Playground") {
                     VStack(alignment: .leading, spacing: SPSpacing.lg) {
                         preview
                             .frame(maxWidth: .infinity, minHeight: 96)
                             .padding(SPSpacing.lg)
-                            .background(Color.spSurfaceDefault)
+                            .background(SPColor.surfaceDefault)
                             .clipShape(RoundedRectangle(cornerRadius: SPRadius.lg))
-                            .overlay(RoundedRectangle(cornerRadius: SPRadius.lg).strokeBorder(Color.spBorderSubtle))
+                            .overlay(RoundedRectangle(cornerRadius: SPRadius.lg).strokeBorder(SPColor.borderSubtle))
                         VStack(alignment: .leading, spacing: SPSpacing.sm) {
                             controls
                         }
@@ -37,7 +37,7 @@ struct ComponentPage<Preview: View, Controls: View, Sections: View>: View {
             .frame(maxWidth: 960, alignment: .leading)
             .frame(maxWidth: .infinity)
         }
-        .background(Color.spSurfaceSubtle)
+        .background(SPColor.surfaceSubtle)
     }
 }
 
@@ -54,8 +54,8 @@ struct CatalogSection<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: SPSpacing.md) {
             Text(title)
-                .spTextStyle(.headline4)
-                .foregroundStyle(.spTextPrimary)
+                .spType(.headline4)
+                .foregroundStyle(SPColor.textPrimary)
                 .accessibilityAddTraits(.isHeader)
             content
         }
@@ -76,8 +76,8 @@ struct Specimen<Content: View>: View {
         VStack(alignment: .leading, spacing: SPSpacing.sm) {
             content
             Text(label)
-                .spTextStyle(.caption)
-                .foregroundStyle(.spTextSecondary)
+                .spType(.caption)
+                .foregroundStyle(SPColor.textSecondary)
         }
     }
 }

@@ -15,21 +15,21 @@
 
 ## Parameters
 
-`SPButton(_ label:variant:size:leftIcon:rightIcon:showsLabel:isFullWidth:action:)`
+`SPButton(_ label:type:size:leftIcon:rightIcon:showsText:isFullWidth:action:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | Visible text, and the VoiceOver label. |
-| `variant` | `SPButton.Variant` | `.filled` | `.filled`, `.outlined`, `.text`. |
-| `size` | `SPButton.Size` | `.large` | `.large` (48pt), `.small` (36pt). Grows taller with Dynamic Type. |
-| `leftIcon` / `rightIcon` | `SPIconName?` | `nil` | Any icon from the registry. |
-| `showsLabel` | `Bool` | `true` | `false` makes an icon-only button. Keep `label` set: it becomes the accessibility label. |
-| `isFullWidth` | `Bool` | `false` | Stretches to the container's width. |
-| `action` | `() -> Void` | required | Not called while disabled. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | `label` | Visible text, and the VoiceOver label. |
+| `type` | `SPButtonType` | `.filled` | `type` | `.filled`, `.outlined`, `.text`. |
+| `size` | `SPButtonSize` | `.large` | `size` | `.large` (48pt), `.small` (36pt). Grows taller with Dynamic Type. |
+| `leftIcon` / `rightIcon` | `SPIconName?` | `nil` | `showLeftIcon` + `leftIconName`, `showRightIcon` + `rightIconName` | Any icon from the registry. `nil` hides it. |
+| `showsText` | `Bool` | `true` | `showText` | `false` makes an icon-only button. Keep `label` set: it becomes the accessibility label. |
+| `isFullWidth` | `Bool` | `false` | (a CSS class on the web) | Stretches to the container's width. |
+| `action` | `() -> Void` | required | `buttonClick` | Not called while disabled. |
 
 Disable with the standard modifier: `.disabled(!canContinue)`.
 
-`SPButtonStyle(variant:size:isFullWidth:)` is the same look as a `ButtonStyle`, for a `Button`, `NavigationLink` or `ShareLink` with custom content.
+`SPButtonStyle(type:size:isFullWidth:)` is the same look as a `ButtonStyle`, for a `Button`, `NavigationLink` or `ShareLink` with custom content.
 
 ## Behavior
 
@@ -39,14 +39,14 @@ Disable with the standard modifier: `.disabled(!canContinue)`.
 
 ## Gotchas
 
-- There is no `state` parameter. Disabled comes from `.disabled(_:)`. To show hover/pressed/focus statically (catalogs, snapshots), use `.spInteractionState(.hover)`.
+- There is no `state` parameter (the web's `state`). Disabled comes from `.disabled(_:)`. To show hover/pressed/focus statically (catalogs, snapshots), use `.spInteractionState(.hover)`.
 - **Known token issue (dark mode):** a disabled `.filled` button's label is not readable. `--color-text-on-disabled` and `--color-surface-disabled` are both `neutral-70` in the dark theme. Fix it in the web tokens; the Swift colors are generated from them.
 
 ## Example
 
 ```swift
 HStack {
-    SPButton("Back", variant: .text, leftIcon: .arrowLeft) { goBack() }
+    SPButton("Back", type: .text, leftIcon: .arrowLeft) { goBack() }
     SPButton("Continue") { goNext() }
 }
 

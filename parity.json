@@ -1,0 +1,184 @@
+{
+  "$comment": "Every Angular @Input/@Output mapped to its Swift equivalent. `swift` is the Swift parameter label (checked against the component source); `native` explains inputs iOS handles itself. Checked by scripts/check-parity.mjs, which also writes docs/parity.md.",
+  "components": {
+    "avatar": {
+      "swift": "SPAvatar",
+      "inputs": {
+        "size": { "swift": "size" },
+        "type": { "swift": "type", "note": "`.text(initials)`, `.image(Image)`, `.imageURL(URL?)`, `.icon`." },
+        "initials": { "swift": "type", "note": "Carried by `.text(initials)`." },
+        "imageSrc": { "swift": "type", "note": "Carried by `.imageURL(url)`, or `.image(Image)` for a local image." },
+        "imageAlt": { "swift": "accessibilityLabel", "note": "Labels every type, not only images." },
+        "showNotification": { "swift": "notificationCount", "note": "A count shows the badge; `nil` hides it." },
+        "notificationCount": { "swift": "notificationCount" },
+        "showStatus": { "swift": "statusColor", "note": "A color shows the dot; `nil` hides it." },
+        "statusColor": { "swift": "statusColor" }
+      },
+      "outputs": {}
+    },
+    "badge": {
+      "swift": "SPBadge",
+      "inputs": {
+        "label": { "swift": "_ label" },
+        "type": { "swift": "type" },
+        "status": { "swift": "status" }
+      },
+      "outputs": {}
+    },
+    "button": {
+      "swift": "SPButton",
+      "inputs": {
+        "label": { "swift": "_ label" },
+        "type": { "swift": "type" },
+        "size": { "swift": "size" },
+        "state": { "native": "Hover, pressed and focus come from the system. Disabled is `.disabled(_:)`." },
+        "showLeftIcon": { "swift": "leftIcon", "note": "An icon shows it; `nil` hides it." },
+        "leftIconName": { "swift": "leftIcon" },
+        "showRightIcon": { "swift": "rightIcon", "note": "An icon shows it; `nil` hides it." },
+        "rightIconName": { "swift": "rightIcon" },
+        "showText": { "swift": "showsText" }
+      },
+      "outputs": {
+        "buttonClick": { "swift": "action", "note": "Trailing closure." }
+      }
+    },
+    "button-group": {
+      "swift": "SPButtonGroup",
+      "inputs": {
+        "items": { "swift": "items", "note": "`Item(value, label:leftIcon:rightIcon:)`." },
+        "size": { "swift": "size" },
+        "showLeftIcon": { "swift": "leftIcon", "note": "Set per item." },
+        "showRightIcon": { "swift": "rightIcon", "note": "Set per item." },
+        "showLabel": { "swift": "showsLabel" },
+        "disabled": { "native": "`.disabled(_:)`." },
+        "activeIndex": { "swift": "selection", "note": "A Binding to the selected item's value." }
+      },
+      "outputs": {
+        "selectionChange": { "swift": "selection", "note": "The Binding updates on tap." }
+      }
+    },
+    "card": {
+      "swift": "SPCard",
+      "inputs": {
+        "variant": { "swift": "variant" },
+        "padding": { "swift": "padding" }
+      },
+      "outputs": {}
+    },
+    "checkbox": {
+      "swift": "SPCheckbox",
+      "inputs": {
+        "checked": { "swift": "isChecked", "note": "A Binding." },
+        "indeterminate": { "swift": "isIndeterminate" },
+        "label": { "swift": "_ label" },
+        "disabled": { "native": "`.disabled(_:)`." }
+      },
+      "outputs": {
+        "checkedChange": { "swift": "isChecked", "note": "The Binding updates on tap." }
+      }
+    },
+    "chip": {
+      "swift": "SPChip",
+      "inputs": {
+        "label": { "swift": "_ label" },
+        "type": { "swift": "onRemove", "note": "Passing `onRemove` makes the chip clearable." },
+        "state": { "native": "Hover, pressed and focus come from the system. Disabled is `.disabled(_:)`." },
+        "showLeftIcon": { "swift": "leftIcon", "note": "An icon shows it; `nil` hides it." },
+        "leftIconName": { "swift": "leftIcon" },
+        "showRightIcon": { "swift": "rightIcon", "note": "An icon shows it; `nil` hides it." },
+        "rightIconName": { "swift": "rightIcon" }
+      },
+      "outputs": {
+        "removed": { "swift": "onRemove" }
+      }
+    },
+    "icon": {
+      "swift": "SPIcon",
+      "inputs": {
+        "name": { "swift": "_ name" },
+        "size": { "swift": "size" },
+        "color": { "native": "`.foregroundStyle(_:)`, like any SwiftUI view." }
+      },
+      "outputs": {}
+    },
+    "input": {
+      "swift": "SPInput",
+      "inputs": {
+        "label": { "swift": "_ label" },
+        "placeholder": { "swift": "placeholder" },
+        "helperText": { "swift": "helperText" },
+        "errorText": { "swift": "errorText" },
+        "state": { "swift": "state", "note": "`.default`, `.error`, `.success`. Focus and disabled are native." },
+        "showOptional": { "swift": "showsOptional" },
+        "type": { "swift": "type" },
+        "showLeftIcon": { "swift": "leftIcon", "note": "An icon shows it; `nil` hides it." },
+        "leftIconName": { "swift": "leftIcon" },
+        "showRightIcon": { "swift": "rightIcon", "note": "An icon shows it; `nil` hides it." },
+        "rightIconName": { "swift": "rightIcon" }
+      },
+      "outputs": {
+        "valueChange": { "swift": "value", "note": "A Binding." }
+      }
+    },
+    "radio": {
+      "swift": "SPRadio",
+      "inputs": {
+        "checked": { "swift": "isChecked" },
+        "label": { "swift": "_ label" },
+        "disabled": { "native": "`.disabled(_:)`." }
+      },
+      "outputs": {
+        "checkedChange": { "swift": "action", "note": "Or use `SPRadioGroup`, which manages the selection." }
+      }
+    },
+    "select": {
+      "swift": "SPSelect",
+      "inputs": {
+        "options": { "swift": "options", "note": "`SPSelectOption(value, label:isDisabled:)`." },
+        "value": { "swift": "value", "note": "A Binding: `Value?` for one, `Set<Value>` for several." },
+        "multiple": { "swift": "value", "note": "Chosen by the Binding's type." },
+        "placeholder": { "swift": "placeholder" },
+        "label": { "swift": "_ label" },
+        "helperText": { "swift": "helperText" },
+        "errorText": { "swift": "errorText" },
+        "state": { "swift": "state", "note": "`.default`, `.error`. Disabled is `.disabled(_:)`." }
+      },
+      "outputs": {
+        "valueChange": { "swift": "value", "note": "The Binding updates on selection." }
+      }
+    },
+    "slider": {
+      "swift": "SPSlider",
+      "inputs": {
+        "value": { "swift": "value", "note": "A Binding." },
+        "min": { "swift": "in range", "note": "`in: min...max`." },
+        "max": { "swift": "in range", "note": "`in: min...max`." },
+        "step": { "swift": "step" },
+        "disabled": { "native": "`.disabled(_:)`." },
+        "showValue": { "swift": "showsValue" }
+      },
+      "outputs": {
+        "valueChange": { "swift": "value", "note": "The Binding updates while dragging." }
+      }
+    },
+    "stepper": {
+      "swift": "SPStepper",
+      "inputs": {
+        "steps": { "swift": "steps", "note": "`SPStepperStep(label, description:state:)`." },
+        "activeStep": { "swift": "activeStep" },
+        "orientation": { "swift": "orientation" }
+      },
+      "outputs": {}
+    },
+    "switch": {
+      "swift": "SPSwitch",
+      "inputs": {
+        "checked": { "swift": "isChecked", "note": "A Binding. Swift also requires a `label` for VoiceOver." },
+        "disabled": { "native": "`.disabled(_:)`." }
+      },
+      "outputs": {
+        "checkedChange": { "swift": "isChecked", "note": "The Binding updates on tap." }
+      }
+    }
+  }
+}

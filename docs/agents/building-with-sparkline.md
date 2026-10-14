@@ -26,7 +26,7 @@ This guide is for AI coding agents (and people) building SwiftUI screens for iOS
 ## Rules
 
 - **Use a Sparkline component whenever one fits.** Check the component list in `llms.txt` before building anything yourself.
-- **Style with semantic tokens only.** Colors: `Color.sp…` / `.foregroundStyle(.spTextPrimary)`. Spacing: `SPSpacing`. Radius: `SPRadius`. Shadows: `.spShadow(_:)`. Type: `.spTextStyle(_:)`. Never write literal colors (`Color(red:…)`, `.purple`, hex), and never hardcode spacing or radius numbers. See `tokens.md`.
+- **Style with semantic tokens only.** Colors: `SPColor` (`.foregroundStyle(SPColor.textPrimary)`). Spacing: `SPSpacing`. Radius: `SPRadius`. Shadows: `.spShadow(_:)`. Type: `.spType(_:)`. Never write literal colors (`Color(red:…)`, `.purple`, hex), and never hardcode spacing or radius numbers. See `tokens.md`.
 - **Use the standard SwiftUI patterns the components are built for.** Values are `Binding`s (`$agreed`, `$email`, `$term`), actions are closures, and disabled state is `.disabled(_:)`. There is no `state: .disabled` parameter anywhere.
 - **Icons come from `SPIconName`.** Names are an enum, so an unknown icon is a compile error. Color icons with `.foregroundStyle`.
 - **Match the naming.** Sparkline types use the `SP` prefix. Do not prefix your own types with `SP`.

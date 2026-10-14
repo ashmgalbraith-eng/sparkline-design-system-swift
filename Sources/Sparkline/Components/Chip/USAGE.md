@@ -20,14 +20,14 @@ import Sparkline
 
 `SPChip(_ label:leftIcon:rightIcon:onRemove:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `label` | `String` | required | |
-| `leftIcon` | `SPIconName?` | `nil` | |
-| `rightIcon` | `SPIconName?` | `nil` | Ignored when the chip is clearable. |
-| `onRemove` | `(() -> Void)?` | `nil` | When set, shows a remove button that calls it. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `label` | `String` | required | `label` | |
+| `leftIcon` | `SPIconName?` | `nil` | `showLeftIcon` + `leftIconName` | `nil` hides it. |
+| `rightIcon` | `SPIconName?` | `nil` | `showRightIcon` + `rightIconName` | `nil` hides it. Ignored when the chip is clearable. |
+| `onRemove` | `(() -> Void)?` | `nil` | `type: 'clearable'`, `removed` | When set, the chip is clearable: it shows a remove button that calls this. |
 
-Disable with `.disabled(true)`.
+Disable with `.disabled(true)`. Hover, pressed and focus (the web's `state`) come from the system.
 
 ## Behavior
 
@@ -45,7 +45,7 @@ SPFlowLayout(spacing: SPSpacing.sm) {
     ForEach(filters, id: \.self) { filter in
         SPChip(filter) { filters.removeAll { $0 == filter } }
     }
-    SPButton("Clear all", variant: .text, size: .small) { filters = [] }
+    SPButton("Clear all", type: .text, size: .small) { filters = [] }
 }
 ```
 

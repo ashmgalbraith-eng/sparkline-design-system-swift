@@ -6,23 +6,20 @@ import SwiftUI
 /// ```swift
 /// SPCard(variant: .outlined, padding: .none) {
 ///     ReceiptRow("Term", "12 months")
-///     Divider().overlay(Color.spBorderSubtle)
+///     Divider().overlay(SPColor.borderSubtle)
 ///     ReceiptRow("APY", "4.85%")
 /// }
 /// ```
 public struct SPCard<Content: View>: View {
-    public typealias Variant = SPCardVariant
-    public typealias Padding = SPCardPadding
-
-    let variant: Variant
-    let padding: Padding
+    let variant: SPCardVariant
+    let padding: SPCardPadding
     let content: Content
 
     /// - Parameters:
     ///   - variant: `.elevated`, `.outlined` or `.filled`.
     ///   - padding: Inner padding: 0, 8, 16 or 24pt.
     ///   - content: The card's content, laid out in a leading-aligned `VStack` with no spacing.
-    public init(variant: Variant = .elevated, padding: Padding = .md, @ViewBuilder content: () -> Content) {
+    public init(variant: SPCardVariant = .elevated, padding: SPCardPadding = .md, @ViewBuilder content: () -> Content) {
         self.variant = variant
         self.padding = padding
         self.content = content()
@@ -35,16 +32,16 @@ public struct SPCard<Content: View>: View {
         }
         .padding(padding.value)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(variant == .filled ? Color.spSurfaceSubtle : Color.spSurfaceDefault)
+        .background(variant == .filled ? SPColor.surfaceSubtle : SPColor.surfaceDefault)
         .clipShape(shape)
         .overlay {
             if variant == .outlined {
-                shape.strokeBorder(Color.spBorderSubtle, lineWidth: 1)
+                shape.strokeBorder(SPColor.borderSubtle, lineWidth: 1)
             }
         }
         .background {
             if variant == .elevated {
-                shape.fill(Color.spSurfaceDefault).spShadow(.md)
+                shape.fill(SPColor.surfaceDefault).spShadow(.md)
             }
         }
     }
@@ -55,7 +52,7 @@ struct SPCard_Previews: PreviewProvider {
         VStack(spacing: SPSpacing.lg) {
             ForEach(SPCardVariant.allCases, id: \.self) { variant in
                 SPCard(variant: variant) {
-                    Text(variant.rawValue.capitalized).spTextStyle(.body1)
+                    Text(variant.rawValue.capitalized).spType(.body1)
                 }
             }
         }

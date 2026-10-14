@@ -16,9 +16,9 @@ struct ConsentView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: SPSpacing.md) {
             Text("Review and agree")
-                .spTextStyle(.headline4)
-                .foregroundStyle(.spTextPrimary)
-            SPCheckbox("I have read the account disclosures", isOn: $agreed)
+                .spType(.headline4)
+                .foregroundStyle(SPColor.textPrimary)
+            SPCheckbox("I have read the account disclosures", isChecked: $agreed)
             SPButton("Open account", isFullWidth: true) { }
                 .disabled(!agreed)
         }
@@ -107,7 +107,7 @@ struct ConsentView: View {
 - ``SPSpacing``
 - ``SPRadius``
 - ``SPShadow``
-- ``SPTextStyle``
+- ``SPType``
 - ``SPFontFamily``
 - ``SPFonts``
 

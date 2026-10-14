@@ -16,11 +16,11 @@ public struct SPIconShape: Shape {
 /// Renders an icon from the Sparkline registry on a 24×24 grid.
 ///
 /// The icon fills with the current foreground style, so color it with
-/// `.foregroundStyle(.spTextBrand)` or let it inherit from its container.
+/// `.foregroundStyle(SPColor.textBrand)` or let it inherit from its container.
 ///
 /// ```swift
 /// SPIcon(.helpCircleOutline, size: 20)
-///     .foregroundStyle(.spTextSecondary)
+///     .foregroundStyle(SPColor.textSecondary)
 /// ```
 public struct SPIcon: View {
     let name: SPIconName
@@ -58,9 +58,9 @@ struct SPIcon_Previews: PreviewProvider {
             SPIcon(.check, size: 16)
             SPIcon(.bellOutline, size: 20)
             SPIcon(.heartOutline)
-                .foregroundStyle(.spTextBrand)
+                .foregroundStyle(SPColor.textBrand)
             SPIcon(.checkCircleOutline, size: 32)
-                .foregroundStyle(.spTextSuccess)
+                .foregroundStyle(SPColor.textSuccess)
         }
         .padding()
     }

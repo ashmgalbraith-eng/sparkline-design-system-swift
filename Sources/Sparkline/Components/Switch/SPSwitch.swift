@@ -3,31 +3,31 @@ import SwiftUI
 /// An on/off toggle for settings that take effect immediately.
 ///
 /// ```swift
-/// SPSwitch("Paperless statements", isOn: $paperless)
+/// SPSwitch("Paperless statements", isChecked: $paperless)
 /// ```
 ///
 /// To style a plain `Toggle`, use `.toggleStyle(.sparkline)`.
 public struct SPSwitch: View {
     let label: String
     let showsLabel: Bool
-    @Binding var isOn: Bool
+    @Binding var isChecked: Bool
 
     /// - Parameters:
     ///   - label: Shown leading, with the switch trailing. Always read by VoiceOver.
-    ///   - isOn: The switch state.
+    ///   - isChecked: The switch state.
     ///   - showsLabel: `false` hides the text visually; put your own visible label beside it.
-    public init(_ label: String, isOn: Binding<Bool>, showsLabel: Bool = true) {
+    public init(_ label: String, isChecked: Binding<Bool>, showsLabel: Bool = true) {
         self.label = label
-        self._isOn = isOn
+        self._isChecked = isChecked
         self.showsLabel = showsLabel
     }
 
     public var body: some View {
-        Toggle(isOn: $isOn) {
+        Toggle(isOn: $isChecked) {
             if showsLabel {
                 Text(label)
-                    .spTextStyle(.body1)
-                    .foregroundStyle(.spTextPrimary)
+                    .spType(.body1)
+                    .foregroundStyle(SPColor.textPrimary)
             }
         }
         .toggleStyle(SPSwitchToggleStyle())
@@ -56,8 +56,8 @@ private struct SPSwitchBody: View {
 
     var body: some View {
         let track: Color = !isEnabled
-            ? .spControlTrackDisabled
-            : (configuration.isOn ? .spControlTrackActive : .spControlTrack)
+            ? SPColor.controlTrackDisabled
+            : (configuration.isOn ? SPColor.controlTrackActive : SPColor.controlTrack)
 
         Button {
             configuration.isOn.toggle()
@@ -70,7 +70,7 @@ private struct SPSwitchBody: View {
                     .frame(width: 56, height: 32)
                     .overlay(alignment: configuration.isOn ? .trailing : .leading) {
                         Circle()
-                            .fill(Color.spControlThumbInverse)
+                            .fill(SPColor.controlThumbInverse)
                             .frame(width: 24, height: 24)
                             .spShadow(.button)
                             .padding(4)
@@ -93,9 +93,9 @@ struct SPSwitch_Previews: PreviewProvider {
         @State var off = false
         var body: some View {
             VStack(spacing: SPSpacing.md) {
-                SPSwitch("Paperless statements", isOn: $on)
-                SPSwitch("Notifications", isOn: $off)
-                SPSwitch("Disabled", isOn: $on).disabled(true)
+                SPSwitch("Paperless statements", isChecked: $on)
+                SPSwitch("Notifications", isChecked: $off)
+                SPSwitch("Disabled", isChecked: $on).disabled(true)
             }
             .padding()
         }

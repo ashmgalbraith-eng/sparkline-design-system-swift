@@ -13,15 +13,17 @@ Components that show icons (`SPButton`, `SPInput`, `SPChip`, `SPButtonGroup`) ta
 
 `SPIcon(_ name:size:accessibilityLabel:)`
 
-| Name | Type | Default | Notes |
-|---|---|---|---|
-| `name` | `SPIconName` | required | A case of the generated enum. Raw values match the web registry keys. |
-| `size` | `CGFloat` | `24` | Points. Common sizes: 16, 20, 24, 32. |
-| `accessibilityLabel` | `String?` | `nil` | Set it when the icon carries meaning on its own. Without it the icon is hidden from VoiceOver. |
+| Name | Type | Default | Angular | Notes |
+|---|---|---|---|---|
+| `name` | `SPIconName` | required | `name` | A case of the generated enum. Raw values match the web registry keys. |
+| `size` | `CGFloat` | `24` | `size` | Points. Common sizes: 16, 20, 24, 32. |
+| `accessibilityLabel` | `String?` | `nil` | (none) | Set it when the icon carries meaning on its own. Without it the icon is hidden from VoiceOver. |
+
+The web's `color` is `.foregroundStyle(_:)` in Swift.
 
 ## Behavior
 
-- The icon fills with the current foreground style. Color it with `.foregroundStyle(.spTextBrand)` or let it inherit from its parent. (The web default color is a primitive; the Swift icon has no default color of its own.)
+- The icon fills with the current foreground style. Color it with `.foregroundStyle(SPColor.textBrand)` or let it inherit from its parent. (The web default color is a primitive; the Swift icon has no default color of its own.)
 - Names are an enum, so a typo is a compile error rather than an empty box.
 - Icons are vector `Path`s generated at build time; they stay sharp at any size.
 
@@ -43,10 +45,10 @@ Link(destination: helpURL) {
         SPIcon(.helpCircleOutline, size: 20)
     }
 }
-.foregroundStyle(.spTextBrand)
+.foregroundStyle(SPColor.textBrand)
 
 SPIcon(.checkCircleOutline, size: 48, accessibilityLabel: "Success")
-    .foregroundStyle(.spTextSuccess)
+    .foregroundStyle(SPColor.textSuccess)
 ```
 
 ## Topics
