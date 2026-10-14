@@ -23,7 +23,7 @@ node scripts/build-agent-docs.mjs  # regenerate llms.txt and the DocC component 
 swift build                        # type-check the package (macOS host)
 ```
 
-In Xcode: open `Package.swift` for the library (previews, tests, Product › Build Documentation), or `Catalog/SparklineCatalog.xcodeproj` to run the catalog app in the simulator.
+In Xcode: open `Package.swift` for the library (previews, tests, Product › Build Documentation), or `Sparkline.xcworkspace` to run the catalog app in the simulator.
 
 ## Project Structure
 

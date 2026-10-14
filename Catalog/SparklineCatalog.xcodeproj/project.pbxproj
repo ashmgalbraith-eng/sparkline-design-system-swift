@@ -100,9 +100,6 @@
 			);
 			mainGroup = 5A1C00000000000000000601;
 			minimizedProjectReferenceProxies = 1;
-			packageReferences = (
-				5A1C00000000000000000302 /* XCLocalSwiftPackageReference ".." */,
-			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5A1C00000000000000000602 /* Products */;
 			projectDirPath = "";
@@ -250,17 +247,9 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		5A1C00000000000000000302 /* XCLocalSwiftPackageReference ".." */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ..;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
 		5A1C00000000000000000301 /* Sparkline */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5A1C00000000000000000302 /* XCLocalSwiftPackageReference ".." */;
 			productName = Sparkline;
 		};
 /* End XCSwiftPackageProductDependency section */

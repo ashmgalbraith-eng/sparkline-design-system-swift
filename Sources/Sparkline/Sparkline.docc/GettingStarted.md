@@ -48,4 +48,4 @@ If the fonts are missing, text falls back to the system font and nothing breaks.
 
 ## Explore the catalog
 
-Open `Catalog/SparklineCatalog.xcodeproj` and run **SparklineCatalog** on an iPhone or iPad simulator. Every component has a playground with live controls, plus its variants and states. The toolbar switches between light and dark mode and Dynamic Type sizes.
+Open `Sparkline.xcworkspace` and run **SparklineCatalog** on an iPhone or iPad simulator. Every component has a playground with live controls, plus its variants and states. The toolbar switches between light and dark mode and Dynamic Type sizes.

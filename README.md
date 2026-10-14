@@ -41,7 +41,7 @@ Style your own views with tokens: `.foregroundStyle(.spTextPrimary)`, `.padding(
 
 ## Explore
 
-- **Catalog app:** open `Catalog/SparklineCatalog.xcodeproj` and run it on an iPhone or iPad simulator. It replaces Storybook: every component has a playground with live controls, plus variants and states, with light/dark and Dynamic Type switches.
+- **Catalog app:** open `Sparkline.xcworkspace` and run it on an iPhone or iPad simulator. It replaces Storybook: every component has a playground with live controls, plus variants and states, with light/dark and Dynamic Type switches.
 - **Documentation:** open `Package.swift` in Xcode and choose **Product › Build Documentation**.
 - **For AI agents:** start at [`llms.txt`](llms.txt).
 
